@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('templates/head') %>
+    <title>Login</title>
+</head>
+<body>
+    <%- include('templates/header') %>
+    <main>
+        <div>
+           <div>
+            <img src="images/login.png">
+           </div>
+           <form method="POST" action="">
+                <input type="email" name="email" required>
+                <input type="password" name="password" required>
+                <input type="submit" name="submit">
+           </form>
+           
+           <div>
+                <a href="#">New Account? Sign Up.</a>
+           </div>
+        </div>
+    </main>
+    <%- include('templates/footer')%>
+</body>
+</html>

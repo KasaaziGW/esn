@@ -25,8 +25,9 @@
   "homepage": "https://github.com/KasaaziGW/esn#readme",
   "dependencies": {
     "body-parser": "^1.20.2",
+    "ejs": "^3.1.9",
     "express": "^4.18.2",
-    "mongoose": "^7.5.3",
+    "mongoose": "^6.1.7",
     "nodemon": "^3.0.1"
   }
 }
