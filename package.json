@@ -1,0 +1,32 @@
+{
+  "name": "esn",
+  "version": "1.0.0",
+  "description": "This is the final project for the web-based IS class.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KasaaziGW/esn.git"
+  },
+  "keywords": [
+    "Emergency",
+    "Social",
+    "Network",
+    "esn"
+  ],
+  "author": "MIS2021",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KasaaziGW/esn/issues"
+  },
+  "homepage": "https://github.com/KasaaziGW/esn#readme",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "express": "^4.18.2",
+    "mongoose": "^7.5.3",
+    "nodemon": "^3.0.1"
+  }
+}
