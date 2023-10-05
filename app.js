@@ -22,6 +22,9 @@ app.get("/", (request, response) => {
   response.render("login");
 });
 
+app.get("/register", (request, response) => {
+  response.render("register");
+});
 // starting the server
 app.listen(PORT, () => {
   console.log("The server is up and running on port 3000.");
