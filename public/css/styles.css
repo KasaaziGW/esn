@@ -4,6 +4,39 @@ body{
 }
 .heading{
     font-size: 25px;
-    color: #211245;
-    
+    color: #211245;    
+}
+a {
+    color: #92badd;
+    display: inline-block;
+    text-decoration: none;
+}
+.wrapper{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+    min-height: 100%;
+    padding: 20px;
+}
+.formContent{
+    /* border: 1px solid #211245; */
+    border-radius: 10px 10px 10px 10px;
+    -webkit-border-radius:10px 10px 10px 10px;
+    background-color: #fff;
+    padding: 30px;
+    width: 90%;
+    max-width: 450px;
+}
+.formFooter{
+    background-color: #f6f6f6;
+    border-top: 1px solid #dce9f1;
+    margin-top: 0px;
+    padding: 10px;
+    text-align: center;
+
+}
+
+#icon {
+    width: 50%;
 }

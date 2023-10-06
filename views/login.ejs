@@ -6,19 +6,21 @@
 </head>
 <body>
     <%- include('templates/header') %>
-    <main>
-        <div>
-           <div>
-            <img src="images/login.png">
-           </div>
-           <form method="POST" action="">
-                <input type="email" name="email" required placeholder="Enter your email here." autocomplete="off">
-                <input type="password" name="password" required placeholder="Enter your password here">
-                <input type="submit" name="submit">
-           </form>
-           
-           <div>
-                <a href="/register">New Account? Sign Up.</a>
+    <main class="container">
+        <div class="wrapper fadeInDown">
+           <div class="formContent">
+                <div>
+                    <img src="images/login.png" id="icon" alt="User icon">
+                </div>
+                <form method="POST" action="">
+                        <input type="email" name="email" required placeholder="Enter your email here." autocomplete="off">
+                        <input type="password" name="password" required placeholder="Enter your password here">
+                        <input type="submit" name="submit">
+                </form>
+                
+                <div class="formFooter">
+                    <a href="/register">New Account? Sign Up.</a>
+                </div>'
            </div>
         </div>
     </main>
