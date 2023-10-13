@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const flashMessage = require("connect-flash");
 const sessions = require("express-session");
+const { Citizen } = require("./models/Citizen");
 const PORT = 4000;
 
 const app = express();
@@ -60,6 +61,18 @@ app.post("/userRegister", (request, response) => {
     response.redirect("/register");
   } else {
     // check if the user already exists
+    Citizen.findOne({ username: email }).then((user) => {
+      if (user) {
+        request.flash(
+          "error",
+          `${fullname} already exists! Use a different email.`
+        );
+        response.redirect("/register");
+      } else {
+        request.flash("error", `Account created for ${fullname}.`);
+        response.redirect("/register");
+      }
+    });
     // encrypt the password
   }
 });
