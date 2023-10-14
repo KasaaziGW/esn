@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const flashMessage = require("connect-flash");
 const sessions = require("express-session");
 const { Citizen } = require("./models/Citizen");
+const bcrypt = require("bcryptjs");
 const PORT = 4000;
 
 const app = express();
@@ -62,18 +63,44 @@ app.post("/userRegister", (request, response) => {
   } else {
     // check if the user already exists
     Citizen.findOne({ username: email }).then((user) => {
+      // if the user exists, return an error and reload the page
       if (user) {
         request.flash(
           "error",
-          `${fullname} already exists! Use a different email.`
+          `${user.fullname} already exists! Use a different email.`
         );
         response.redirect("/register");
       } else {
-        request.flash("error", `Account created for ${fullname}.`);
-        response.redirect("/register");
+        // create account for the user
+        // encrypt the password
+        // var hashedPasswd = bcrypt.hash(pswd, 10);
+        bcrypt.hash(pswd, 10, (err, hashedPassword) => {
+          if (err) {
+            request.flash("error", `Error while hashing password ${err}`);
+            response.redirect("/register");
+          }
+          // create an object of the model
+          let citizen = new Citizen({
+            username: email,
+            fullname: fullname,
+            password: hashedPassword,
+          });
+          // adding the citizen to the database
+          citizen.save((err) => {
+            if (err) {
+              request.flash("error", `Error while adding citizen ${err}`);
+              response.redirect("/register");
+            } else {
+              request.flash(
+                "success",
+                `${fullname} successfully added to the system.`
+              );
+              response.redirect("/register");
+            }
+          });
+        });
       }
     });
-    // encrypt the password
   }
 });
 // starting the server
