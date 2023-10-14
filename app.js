@@ -28,7 +28,8 @@ app.use(function (request, response, next) {
   response.locals.message = request.flash();
   next();
 });
-//
+// creating a global session variable
+var session;
 // connecting to the database
 const dbUrl = "mongodb+srv://umumis:umu123@cluster0.odksibj.mongodb.net/";
 mongoose.connect(dbUrl, (err) => {
@@ -38,7 +39,9 @@ mongoose.connect(dbUrl, (err) => {
 
 // loading the login page when the user visits the '/'
 app.get("/", (request, response) => {
-  response.render("login");
+  session = request.session;
+  if (session.userId && session.fullname) response.redirect("/chatroom");
+  else response.render("login");
 });
 
 app.get("/register", (request, response) => {
@@ -102,6 +105,54 @@ app.post("/userRegister", (request, response) => {
       }
     });
   }
+});
+// code for logging into the system
+app.post("/citizenLogin", (request, response) => {
+  let username = request.body.email;
+  let pswd = request.body.password;
+  // check that the user exists
+  Citizen.findOne({ username: username })
+    .then((userInfo) => {
+      if (userInfo) {
+        // user exists, check the password
+        const hashedPassword = userInfo.password;
+        bcrypt.compare(pswd, hashedPassword).then((result) => {
+          if (result) {
+            session = request.session;
+            session.userId = userInfo.username;
+            session.fullname = userInfo.fullname;
+            response.redirect("/chatroom");
+          } else {
+            request.flash("error", "Invalid Username or Password combination!");
+            response.redirect("/");
+          }
+        });
+      } else {
+        request.flash("error", "Citizen not found in the system!");
+        response.redirect("/");
+      }
+    })
+    .catch((err) => {
+      request.flash("error", `Error while logging in ${err}`);
+      response.redirect("/");
+    });
+});
+// loading the chatroom
+app.get("/chatroom", (request, response) => {
+  session = request.session;
+  // console.log(`User ID: ${session.userId}\nFullname: ${session.fullname}`);
+  if (session.userId && session.fullname) {
+    response.render("chatroom", {
+      data: {
+        userid: request.session.userId,
+        fullname: request.session.fullname,
+      },
+    });
+  } else response.redirect("/");
+});
+app.get("/logout", (request, response) => {
+  request.session.destroy();
+  response.redirect("/");
 });
 // starting the server
 app.listen(PORT, () => {
