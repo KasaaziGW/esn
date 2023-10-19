@@ -121,7 +121,7 @@ app.post("/citizenLogin", (request, response) => {
             session = request.session;
             session.userId = userInfo.username;
             session.fullname = userInfo.fullname;
-            response.redirect("/chatroom");
+            response.redirect("/home");
           } else {
             request.flash("error", "Invalid Username or Password combination!");
             response.redirect("/");
@@ -137,7 +137,21 @@ app.post("/citizenLogin", (request, response) => {
       response.redirect("/");
     });
 });
-// loading the chatroom
+// loading the dashboard
+app.get("/home", (request, response) => {
+  session = request.session;
+  // console.log(`User ID: ${session.userId}\nFullname: ${session.fullname}`);
+  if (session.userId && session.fullname) {
+    response.render("dashboard", {
+      data: {
+        userid: request.session.userId,
+        fullname: request.session.fullname,
+      },
+    });
+  } else response.redirect("/");
+});
+
+//loading the chatroom
 app.get("/chatroom", (request, response) => {
   session = request.session;
   // console.log(`User ID: ${session.userId}\nFullname: ${session.fullname}`);
@@ -150,6 +164,7 @@ app.get("/chatroom", (request, response) => {
     });
   } else response.redirect("/");
 });
+
 app.get("/logout", (request, response) => {
   request.session.destroy();
   response.redirect("/");
