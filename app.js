@@ -175,6 +175,21 @@ app.get("/logout", (request, response) => {
   response.redirect("/");
 });
 
+// saving the message to the database
+app.post("/saveMessage", (request, response) => {
+  // create an object from the model
+  var message = new Message(request.body);
+  // saving the message to the db
+  message.save((err) => {
+    if (err) {
+      console.log(`Error while saving the message. \n Error: ${err}`);
+      response.sendStatus(500);
+    } else {
+      socketIO.emit("message", message);
+      response.sendStatus(200);
+    }
+  });
+});
 // emitting a message when a user joins the chat
 socketIO.on("connect", (socket) => {
   socketIO.emit("joined", uname);
