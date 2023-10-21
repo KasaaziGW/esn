@@ -4,10 +4,14 @@ const bodyParser = require("body-parser");
 const flashMessage = require("connect-flash");
 const sessions = require("express-session");
 const { Citizen } = require("./models/Citizen");
+const { Message } = require("./models/Message");
 const bcrypt = require("bcryptjs");
+
 const PORT = 4000;
 
 const app = express();
+const httpServer = require("http").Server(app);
+const socketIO = require("socket.io")(httpServer);
 app.use(express.static("public")); // points to where the static files are.
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -29,7 +33,7 @@ app.use(function (request, response, next) {
   next();
 });
 // creating a global session variable
-var session;
+var session, uname;
 // connecting to the database
 const dbUrl = "mongodb+srv://umumis:umu123@cluster0.odksibj.mongodb.net/";
 mongoose.connect(dbUrl, (err) => {
@@ -154,6 +158,7 @@ app.get("/home", (request, response) => {
 //loading the chatroom
 app.get("/chatroom", (request, response) => {
   session = request.session;
+  uname = request.session.fullname;
   // console.log(`User ID: ${session.userId}\nFullname: ${session.fullname}`);
   if (session.userId && session.fullname) {
     response.render("chatroom", {
@@ -169,7 +174,14 @@ app.get("/logout", (request, response) => {
   request.session.destroy();
   response.redirect("/");
 });
+
+// emitting a message when a user joins the chat
+socketIO.on("connect", (socket) => {
+  socketIO.emit("joined", uname);
+  console.log(`${uname} has joined`);
+});
+
 // starting the server
-app.listen(PORT, () => {
+httpServer.listen(PORT, () => {
   console.log("The server is up and running on port 4000.");
 });
