@@ -222,8 +222,46 @@ input[type=password]:placeholder {
 #messages
 {
     width: 80.5%;
-    height: 425px;
+    height: 400px;
     overflow: auto;
     /* background-color: #f1f1f1; */
     padding: 5px;
+}
+#alert{
+    width: 80.5%;
+    height: fit-content;
+}
+#messageContainer{
+    float: left;
+    width: 50%;
+    word-wrap: break-word;
+    background-color: #d4d0e5;
+    border-radius: 15px;
+    padding: 5px;
+    margin: 5px;
+}
+#messageContainer1{
+    float: right;
+    width: 50%;
+    word-wrap: break-word;
+    background-color: #d4d0e5;
+    border-radius: 15px;
+    padding: 5px;
+    margin: 5px;
+}
+#messageHeader{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    height: fit-content;
+    border-bottom: 1px solid #211245;
+}
+#senderName{
+    font-size: 18px;
+    font-weight: 600;
+}
+
+#sentTime{
+    font-size: 14px;
+    font-weight: 300;
 }

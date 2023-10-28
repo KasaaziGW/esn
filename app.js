@@ -190,6 +190,14 @@ app.post("/saveMessage", (request, response) => {
     }
   });
 });
+// fetching messages from the database
+app.get("/fetchMessages", (request, response) => {
+  //retrieving the messages from the db
+  Message.find({}, (err, messages) => {
+    if (err) console.log(`Error while fetching messages.\nError: ${err}`);
+    else response.send(messages);
+  });
+});
 // emitting a message when a user joins the chat
 socketIO.on("connect", (socket) => {
   socketIO.emit("joined", uname);

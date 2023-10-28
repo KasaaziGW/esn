@@ -1,20 +1,5 @@
 var socket = io();
 $(() => {
-  socket.on("joined", (user) => {
-    var fullname = document.querySelector("#fullname").textContent;
-    // var fname = $("#fullname").text();
-    // alert(`Server: ${user}, Fullname: ${fullname}, JFullname: ${fname}`);
-    if (user == fullname) {
-      $("#messages").append(
-        "<p><center><strong>You joined the chat.</strong></center></p>"
-      );
-    } else {
-      $("#messages").append(
-        `<p><center><strong> ${user} joined the chat.</strong></center></p>`
-      );
-    }
-  });
-
   $("#sendButton").click(() => {
     // alert(`${document.querySelector("#fullname").textContent} clicked me!`);
     var fullname = document.querySelector("#fullname").textContent;
@@ -30,7 +15,58 @@ $(() => {
     saveMessage(message);
     $("#sendMessage").val("");
   });
+  getMessages();
+
+  socket.on("joined", (user) => {
+    var fullname = document.querySelector("#fullname").textContent;
+    // var fname = $("#fullname").text();
+    // alert(`Server: ${user}, Fullname: ${fullname}, JFullname: ${fname}`);
+    if (user == fullname) {
+      $("#alert").val("");
+      $("#alert").remove("p");
+      $("#alert").append(
+        "<p style='position:absolute;'><center><strong>You joined the chat.</strong></center></p>"
+      );
+    } else {
+      $("#alert").text("");
+      $("#alert").remove("p");
+      $("#alert").append(
+        `<p style='position:absolute;'><center><strong> ${user} joined the chat.</strong></center></p>`
+      );
+    }
+    scrollContainer();
+  });
 });
+
+// displaying message on the UI
+function getMessages() {
+  $.get("http://localhost:4000/fetchMessages", (messages) => {
+    messages.forEach(addMessage);
+  });
+  scrollContainer();
+}
+socket.on("message", addMessage);
+function addMessage(message) {
+  var username = document.querySelector("#fullname").textContent;
+  if (message.sender == username) {
+    $("#messages").append(`<div id="messageContainer1">
+                          <div id="messageHeader">
+                          <div id="senderName">Me</div>
+                          <div id="sentTime">${message.sentTime}</div>
+                          </div>
+                          <p>${message.message}</p>
+                          </div>`);
+  } else {
+    $("#messages").append(`<div id="messageContainer">
+      <div id="messageHeader">
+      <div id="senderName">${message.sender}</div>
+      <div id="sentTime">${message.sentTime}</div>
+      </div>
+      <p>${message.message}</p>
+    </div>`);
+  }
+  scrollContainer();
+}
 // function to get the current date and time
 function getCurrentTime() {
   var today = new Date();
@@ -58,4 +94,9 @@ function getCurrentTime() {
 // sending a message to the server
 function saveMessage(message) {
   $.post("http://localhost:4000/saveMessage", message);
+}
+
+// scrolling to the last message
+function scrollContainer() {
+  $("#messages").scrollTop($("#messages")[0].scrollHeight);
 }
