@@ -5,7 +5,7 @@ This is the final project dubbed "Emergency Social Network [ESN]" that the whole
 # Group 3
 
 ## general implementation
-1. When registering a citizen, set the `privilege`.
+1. When registering a citizen, set the `privilege`. -- done
 2. When logging in, set the user privilege in the session details as well.
 3. When rendering the navigation, show optional navigation links i.e. those dependent on the user privilege
 

@@ -91,6 +91,7 @@ app.post("/userRegister", (request, response) => {
             username: email,
             fullname: fullname,
             password: hashedPassword,
+            privilege: 'Citizen'
           });
           // adding the citizen to the database
           citizen.save((err) => {
