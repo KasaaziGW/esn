@@ -1,6 +1,6 @@
-
 // function to seed an administrator for the application
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
+const bcrypt = require("bcryptjs");
 const { Citizen } = require('../models/Citizen');
 
 async function seedAdmin(){
@@ -20,10 +20,14 @@ async function seedAdmin(){
         status: 'OK'
     }
 
+    // hash the password to be considered
+    const hashedPassword = await bcrypt.hash(seededAdmin.password, 10)
+    seededAdmin.password = hashedPassword
+
     // check if an initial admin is present
     const checkDuplicate = await Citizen.findOne({ username: seededAdmin.username })
     if (checkDuplicate !== null){
-        console.error('ERR! The default administrator is already present')
+        console.error('ERR! The default administrator is already present.')
         process.exit()
     }
     // create the admin using the citizen model
@@ -32,7 +36,7 @@ async function seedAdmin(){
         if(err) {
             console.error('ERR! Unable to add the default admin')
         } else {
-            console.info('OK! Default Administrator has been added successfully.')
+            console.info('OK! Default Administrator,ESNAdmin has been added successfully.')
         }
         process.exit()
     })
