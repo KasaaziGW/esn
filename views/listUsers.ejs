@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,19 +13,21 @@
         <div class="d-flex flex-column flex-shrink-0 p-3" style="width: 100%;">
             <div id="content">
                 
-                <table>
+                <table class="table">
                     <thead>
                         <tr>
                             <th>Name</th>
+                            <th>Username</th>
                             <th>Privilege</th>
-                                                    </tr>
+                        </tr>
                     </thead>
                     <tbody>
                         <% users.forEach(user => { %>
                             <tr>
-                                <td><%= user.fullName %></td>
-                                <td><%= user.privilege %></td>
+                                <td><%= user.fullname %></td>
                                 <td><%= user.username %></td>
+                                <td><%= user.privilege %></td>
+                                
                             </tr>
                         <% }); %>
                     </tbody>
