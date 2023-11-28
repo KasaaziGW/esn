@@ -7,6 +7,8 @@ const { Citizen } = require("./models/Citizen");
 const { Message } = require("./models/Message");
 const bcrypt = require("bcryptjs");
 
+const { listUsers } = require('./group3Controllers/listUsers');
+
 const PORT = 4000;
 
 const app = express();
@@ -204,6 +206,10 @@ app.get("/fetchMessages", (request, response) => {
     else response.send(messages);
   });
 });
+
+// group 3 routes
+app.get('/users', listUsers)
+
 // emitting a message when a user joins the chat
 socketIO.on("connect", (socket) => {
   socketIO.emit("joined", uname);

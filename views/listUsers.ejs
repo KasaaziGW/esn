@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('templates/head'); %>
+    <title>Users</title>
+</head>
+<body>
+    <%- include('templates/header'); %>
+    <main class="d-flex flex-nowrap" style="height:500px;">
+        <%- include('templates/nav'); %>
+        
+        <div class="d-flex flex-column flex-shrink-0 p-3" style="width: 100%;">
+            <div id="content">
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Privilege</th>
+                                                    </tr>
+                    </thead>
+                    <tbody>
+                        <% users.forEach(user => { %>
+                            <tr>
+                                <td><%= user.fullName %></td>
+                                <td><%= user.privilege %></td>
+                                <td><%= user.username %></td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                    </table>
+                </table>
+            </div>
+        </div>
+        
+    </main>
+    <%- include('templates/footer'); %>
+</body>
+</html>

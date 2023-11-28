@@ -36,7 +36,7 @@ async function seedAdmin(){
         if(err) {
             console.error('ERR! Unable to add the default admin')
         } else {
-            console.info('OK! Default Administrator,ESNAdmin has been added successfully.')
+            console.info('OK! Default Administrator, ESNAdmin has been added successfully.')
         }
         process.exit()
     })
