@@ -36,6 +36,9 @@ app.use(function (request, response, next) {
 var session, uname;
 // connecting to the database
 const dbUrl = "mongodb+srv://umumis:umu123@cluster0.odksibj.mongodb.net/";
+// const dbUrl = "mongodb://localhost:27017/misweb";
+
+
 mongoose.connect(dbUrl, (err) => {
   if (err) console.log(`Couldn't connect to MongoDB \n${err}.`);
   else console.log("Succesfully connected to MongoDB.");
@@ -111,6 +114,7 @@ app.post("/userRegister", (request, response) => {
     });
   }
 });
+
 // code for logging into the system
 app.post("/citizenLogin", (request, response) => {
   let username = request.body.email;
@@ -126,6 +130,7 @@ app.post("/citizenLogin", (request, response) => {
             session = request.session;
             session.userId = userInfo.username;
             session.fullname = userInfo.fullname;
+            session.privilege = userInfo.privilege;
             response.redirect("/home");
           } else {
             request.flash("error", "Invalid Username or Password combination!");

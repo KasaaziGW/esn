@@ -5,8 +5,9 @@ This is the final project dubbed "Emergency Social Network [ESN]" that the whole
 # Group 3
 
 ## general implementation
+0. Seeding an administrator i.e. the initial administrator for the system. -- done
 1. When registering a citizen, set the `privilege`. -- done
-2. When logging in, set the user privilege in the session details as well.
+2. When logging in, set the user privilege in the session details as well. -- done
 3. When rendering the navigation, show optional navigation links i.e. those dependent on the user privilege
 
 ## use case 1 i.e. when the user is an administrator
@@ -18,3 +19,7 @@ This is the final project dubbed "Emergency Social Network [ESN]" that the whole
 ## use case 2 i.e. when the user is a cordinator
 8. When the user clicks on the `Announcements` link in the navigation, take to the page that shows the announcements.
 9. IF the user is a `Cordinator`, show an option to post a new announcement.
+
+
+# TODO
+To seed the default administrator, in your working directory run the command, `node group3Controllers/seedAdmin.js`
