@@ -14,12 +14,6 @@ async function listUsers(request, response){
           userid: request.session.userId,
           fullname: request.session.fullname,
         },
-        // users: [
-        //     {fullName: 'Esau Lwanga', privilege: 'Admin', username: 'x'},
-        //     {fullName: 'Hillary Tumukunde', privilege: 'Admin', username: 'x'},
-        //     {fullName: 'Andrew Kataate', privilege: 'Admin', username: 'x'},
-        //     {fullName: 'Racheal Nasasira', privilege: 'Admin', username: 'x'}
-        // ],
         users
       })
 }

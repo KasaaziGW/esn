@@ -23,3 +23,10 @@ This is the final project dubbed "Emergency Social Network [ESN]" that the whole
 
 # TODO
 To seed the default administrator, in your working directory run the command, `node group3Controllers/seedAdmin.js`
+
+typical approach is
+- create a page to render (if necessary)
+- create a function to handle the route for page rendering
+- create the route to match
+---
+- create a function to handle the logic of edits/changes

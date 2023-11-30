@@ -17,7 +17,7 @@ async function seedAdmin(){
         fullname: 'Seed Administrator',
         password: 'admin',
         privilege: 'Administrator',
-        status: 'OK'
+        status: 'Active'
     }
 
     // hash the password to be considered

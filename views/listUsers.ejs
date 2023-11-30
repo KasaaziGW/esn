@@ -6,6 +6,7 @@
     <title>Users</title>
 </head>
 <body>
+
     <%- include('templates/header'); %>
     <main class="d-flex flex-nowrap" style="height:500px;">
         <%- include('templates/nav'); %>
@@ -23,9 +24,10 @@
                         </tr>
                     </thead>
                     <tbody>
+                        
                         <% users.forEach(user => { %>
                             <tr>
-                                <td><%= user.fullname %></td>
+                                <td><a href="/users/<%= user._id %>/"><%= user.fullname %></a></td>
                                 <td><%= user.username %></td>
                                 <td><%= user.privilege %></td>
                                <td><%= user.status %></td>
