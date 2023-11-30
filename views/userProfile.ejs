@@ -1,0 +1,26 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('templates/head'); %>
+    <title>Users</title>
+</head>
+<body>
+    <%- include('templates/header'); %>
+    <main class="d-flex flex-nowrap" style="height:500px;">
+        <%- include('templates/nav'); %>
+        
+        <div class="d-flex flex-column flex-shrink-0 p-3" style="width: 100%;">
+            <div id="content">
+                
+                
+                <!-- form with the user details ready for editing on the go -->
+                <p><%= userId %></p>
+
+            </div>
+        </div>
+        
+    </main>
+    <%- include('templates/footer'); %>
+</body>
+</html>

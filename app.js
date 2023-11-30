@@ -7,7 +7,9 @@ const { Citizen } = require("./models/Citizen");
 const { Message } = require("./models/Message");
 const bcrypt = require("bcryptjs");
 
+// group 3
 const { listUsers } = require('./group3Controllers/listUsers');
+const { showUserProfilePage } = require('./group3Controllers/userProfile');
 
 const PORT = 4000;
 
@@ -209,6 +211,7 @@ app.get("/fetchMessages", (request, response) => {
 
 // group 3 routes
 app.get('/users', listUsers)
+app.get('/users/:id/', showUserProfilePage)
 
 // emitting a message when a user joins the chat
 socketIO.on("connect", (socket) => {
