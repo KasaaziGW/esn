@@ -12,10 +12,59 @@
         
         <div class="d-flex flex-column flex-shrink-0 p-3" style="width: 100%;">
             <div id="content">
-                
-                
+
                 <!-- form with the user details ready for editing on the go -->
-                <p><%= userId %></p>
+                <h4 class="display-4"><%= userProfile.fullname %></h4>
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <form>
+                                
+                                <div class="form-group">
+                                  <label >Username</label>
+                                  <input type="username" class="form-control" placeholder="<%= userProfile.username %>">
+                                </div>
+                                
+                                <div class="form-group" style="margin-top: 15px;">
+                                    <label>Privilege</label>
+                                    <select class="form-control" name="privilege">
+                                      <option>Citizen</option>
+                                      <option>Cordinator</option>
+                                      <option>Administrator</option>
+                                    </select>
+                                  </div>
+
+                                  <div class="form-group" style="margin-top: 15px;">
+                                    <label>Account Status</label>
+                                    <select class="form-control" name="status">
+                                      <option>Active</option>
+                                      <option>Inactive</option>
+                                    </select>
+                                  </div>
+
+                                  <div class="form-group" style="margin-top: 15px;">
+                                    <label>Password</label>
+                                    <input type="password" class="form-control" name="password" placeholder="Password">
+                                  </div>
+
+                                  <div class="form-group" style="margin-top: 15px;">
+                                    <label>Confirm Password</label>
+                                    <input type="password" class="form-control" name="confirmPassword" placeholder="Password">
+                                  </div>
+
+                                <button  style="margin-top: 20px;" type="submit" class="btn btn-primary">Update Profile</button>
+                            </form>
+                        </div>
+                        <div class="col-md-6">
+                            
+                        </div>
+                    </div>
+                </div>
+
+                
+
+            </div>
+    
 
             </div>
         </div>
