@@ -34,7 +34,7 @@
                                 
                                 <div class="form-group" style="margin-top: 15px;">
                                     <label>Privilege</label>
-                                    <select class="form-control" name="privilege" value="<%= userProfile.privilege %>">
+                                    <select class="form-control" name="privilege" value="<%= userProfile.privilege %>" defaultvalue>
                                       <option>Citizen</option>
                                       <option>Cordinator</option>
                                       <option>Administrator</option>
@@ -44,8 +44,8 @@
                                   <div class="form-group" style="margin-top: 15px;">
                                     <label>Account Status</label>
                                     <select class="form-control" name="status" value="<%= userProfile.status %>">
-                                      <option <%= userProfile.status === 'Active' ? 'selected' : '' %>>Active</option>
-                                      <option <%= userProfile.status === 'Inactive' ? 'selected' : '' %>>Inactive</option>
+                                      <option>Active</option>
+                                      <option>Inactive</option>
                                     </select>
                                   </div>
 
