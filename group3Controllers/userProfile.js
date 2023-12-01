@@ -63,7 +63,7 @@ async function updateUserProfile(request, response) {
       updateInfo.password = hashedPassword
     }
 
-    const update = await Citizen.findOneAndUpdate(
+    await Citizen.findOneAndUpdate(
       {_id },
       updateInfo
     )
