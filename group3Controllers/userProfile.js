@@ -53,7 +53,7 @@ async function updateUserProfile(request, response) {
     }
     
     // if the password has been updated, hash the password
-    if (password !== undefined && password.length < 1){
+    if (password !== undefined && password.length > 1){
       // check if the password has been confirmed
       if(confirmPassword !== password){
         request.flash("error", "Passwords do not match")
