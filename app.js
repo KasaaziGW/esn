@@ -198,6 +198,29 @@ app.get("/fetchMessages", (request, response) => {
     else response.send(messages);
   });
 });
+app.get("/privatechat", (request, response) => {
+  console.log(request.session);
+	response.render("privatechat",{
+    data: {
+      userid: request.session.userId,
+      fullname: request.session.fullname,
+    },
+  });
+
+});
+
+app.get("/esndirectory", (request, response) => {
+	Citizen.find({}, (err, citizens) => {
+		if(err) { console.log(`Error getting esn.\nError: ${err}`); }
+		else {
+		response.render("esndirectory", {users: citizens, data: {
+      userid: request.session.userId,
+      fullname: request.session.fullname,
+    },})
+}
+})
+});
+
 // emitting a message when a user joins the chat
 socketIO.on("connect", (socket) => {
   socketIO.emit("joined", uname);
