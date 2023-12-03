@@ -37,12 +37,20 @@
             </a>
         </li>
         
+        <li>
+            <a href="/announcements" class="nav-link link-body-emphasis">
+                Announcements
+            </a>
+        </li>
         <!-- TODO check if the logged in user is an admin -->
+        <% if (data.privilege === 'Administrator') { %>
+                        
         <li>
             <a href="/users" class="nav-link link-body-emphasis">
                 Users
             </a>
         </li>
+        <% } %>
         
 
         <ul class="list-unstyled ps-0">
