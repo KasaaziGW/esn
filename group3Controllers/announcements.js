@@ -20,7 +20,7 @@ async function postAnnouncement(request, response){
     // flash the message
     // reload the page
     const announcement = {
-        announcement: request.body.annoucement,
+        announcement: request.body.announcement,
         posterName: request.session.fullname,
         sentTime: new Date().toString()
     }
