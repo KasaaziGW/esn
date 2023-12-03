@@ -133,6 +133,11 @@ app.post("/citizenLogin", (request, response) => {
         const hashedPassword = userInfo.password;
         bcrypt.compare(pswd, hashedPassword).then((result) => {
           if (result) {
+            // if the user status is Inactive, block the login
+            if (userInfo.status === 'Inactive'){
+              request.flash("error", "Your account is not active, please contact the administrator");
+              return response.redirect("/");
+            }
             session = request.session;
             session.userId = userInfo.username;
             session.fullname = userInfo.fullname;
