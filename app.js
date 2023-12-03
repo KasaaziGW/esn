@@ -11,7 +11,7 @@ const bcrypt = require("bcryptjs");
 const { checkAdmin } = require('./group3Controllers/middleware/checkPrivilege');
 const { listUsers } = require('./group3Controllers/listUsers');
 const { showUserProfilePage, updateUserProfile } = require('./group3Controllers/userProfile');
-const { listAnnouncements } = require('./group3Controllers/announcements')
+const { listAnnouncements, postAnnouncement } = require('./group3Controllers/announcements')
 
 const PORT = 4000;
 
@@ -224,6 +224,7 @@ app.get('/users', [checkAdmin], listUsers)
 app.get('/users/:id/', [checkAdmin], showUserProfilePage)
 app.post('/updateUserProfile', [checkAdmin], updateUserProfile)
 app.get('/announcements', listAnnouncements);
+app.post('/post-announcement', postAnnouncement);
 
 // emitting a message when a user joins the chat
 socketIO.on("connect", (socket) => {

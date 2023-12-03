@@ -16,8 +16,11 @@
                 <div class="container-fluid">
                     <div class="col-md-6">
                         <h4 class="display-4">Announcements</h4>
+                        <%- include('templates/errors') %>
+                        <%- include('templates/success') %>
+                
                         <% if (data.privilege === 'Administrator' || data.privilege === 'Cordinator') { %>
-                        <form style="width: 100%">
+                        <form style="width: 100%" method="POST" action="/post-announcement">
                             <div class="form-group" style="margin-bottom: 10px;">
                               <textarea 
                                 placeholder="Enter the announcement here" 
