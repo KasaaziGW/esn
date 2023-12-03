@@ -8,7 +8,7 @@ const { Message } = require("./models/Message");
 const bcrypt = require("bcryptjs");
 
 // group 3
-const { checkAdmin } = require('./group3Controllers/middleware/checkPrivilege');
+const { checkAdmin, checkCordinator } = require('./group3Controllers/middleware/checkPrivilege');
 const { listUsers } = require('./group3Controllers/listUsers');
 const { showUserProfilePage, updateUserProfile } = require('./group3Controllers/userProfile');
 const { listAnnouncements, postAnnouncement } = require('./group3Controllers/announcements')
@@ -224,7 +224,7 @@ app.get('/users', [checkAdmin], listUsers)
 app.get('/users/:id/', [checkAdmin], showUserProfilePage)
 app.post('/updateUserProfile', [checkAdmin], updateUserProfile)
 app.get('/announcements', listAnnouncements);
-app.post('/post-announcement', postAnnouncement);
+app.post('/post-announcement', [checkCordinator], postAnnouncement);
 
 // emitting a message when a user joins the chat
 socketIO.on("connect", (socket) => {
