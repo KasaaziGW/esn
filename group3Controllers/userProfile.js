@@ -3,11 +3,7 @@ const {Citizen}  =require ('../models/Citizen')
 const bcrypt = require("bcryptjs");
 
 async function showUserProfilePage(request, response){
-    session = request.session;
-  uname = request.session.fullname;
-
-    // check if the user is an administrator
-
+    
     // fetch the list of users from the database
     const user = await Citizen.findOne({
         _id: request.params.id
@@ -18,6 +14,7 @@ async function showUserProfilePage(request, response){
         data: {
           userid: request.session.userId,
           fullname: request.session.fullname,
+          privilege: request.session.privilege
         },
         userId: request.params.id,
         userProfile: user
@@ -25,7 +22,6 @@ async function showUserProfilePage(request, response){
 }
 
 async function updateUserProfile(request, response) {
-  //TODO  check if the current user is an admin
     const {_id, username, password, confirmPassword, status, privilege} = request.body
     let updateInfo = {}
     
@@ -62,8 +58,6 @@ async function updateUserProfile(request, response) {
       const hashedPassword = await bcrypt.hash(password, 10)
       updateInfo.password = hashedPassword
     }
-
-    console.info(updateInfo, request.body)
 
     await Citizen.findOneAndUpdate(
       { _id },

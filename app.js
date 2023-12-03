@@ -8,9 +8,10 @@ const { Message } = require("./models/Message");
 const bcrypt = require("bcryptjs");
 
 // group 3
+const { checkAdmin } = require('./group3Controllers/middleware/checkPrivilege');
 const { listUsers } = require('./group3Controllers/listUsers');
 const { showUserProfilePage, updateUserProfile } = require('./group3Controllers/userProfile');
-const { checkAdmin } = require('./group3Controllers/middleware/checkPrivilege');
+const { listAnnouncements } = require('./group3Controllers/announcements')
 
 const PORT = 4000;
 
@@ -167,6 +168,7 @@ app.get("/home", (request, response) => {
       data: {
         userid: request.session.userId,
         fullname: request.session.fullname,
+        privilege: request.session.privilege
       },
     });
   } else response.redirect("/");
@@ -182,6 +184,7 @@ app.get("/chatroom", (request, response) => {
       data: {
         userid: request.session.userId,
         fullname: request.session.fullname,
+        privilege: request.session.privilege
       },
     });
   } else response.redirect("/");
@@ -220,6 +223,7 @@ app.get("/fetchMessages", (request, response) => {
 app.get('/users', [checkAdmin], listUsers)
 app.get('/users/:id/', [checkAdmin], showUserProfilePage)
 app.post('/updateUserProfile', [checkAdmin], updateUserProfile)
+app.get('/announcements', listAnnouncements);
 
 // emitting a message when a user joins the chat
 socketIO.on("connect", (socket) => {

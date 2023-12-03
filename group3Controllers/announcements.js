@@ -1,17 +1,18 @@
 // list the users that have registered on the platform
-const {Citizen}  =require ('../models/Citizen')
-async function listUsers(request, response){
+const { Announcement }  =require ('../models/Announcement')
+async function listAnnouncements(request, response){
+    
     // fetch the list of users from the database
-    const users = await Citizen.find()
+    const announcements = await Announcement.find()
     // return the list for rendering
-    response.render('listUsers',  {
+    response.render('listAnnouncements',  {
         data: {
           userid: request.session.userId,
           fullname: request.session.fullname,
           privilege: request.session.privilege
         },
-        users
+        announcements
       })
 }
 
-module.exports = { listUsers }
+module.exports = { listAnnouncements }
