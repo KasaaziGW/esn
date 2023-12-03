@@ -44,11 +44,11 @@ async function updateUserProfile(request, response) {
     }
 
     // if the account status has been set to Inactive, notify the user in case and log them out
-    if (status != undefined && status.length > 1){
+    if (status.length > 1){
       updateInfo.status = status
     }
   
-    if (privilege != undefined && status.length > 1){
+    if (status.length > 1){
       updateInfo.privilege = privilege
     }
     
@@ -63,8 +63,10 @@ async function updateUserProfile(request, response) {
       updateInfo.password = hashedPassword
     }
 
+    console.info(updateInfo, request.body)
+
     await Citizen.findOneAndUpdate(
-      {_id },
+      { _id },
       updateInfo
     )
     request.flash("success", "The user profile has been updated successfully.")
