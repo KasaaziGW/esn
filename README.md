@@ -18,7 +18,7 @@ This is the final project dubbed "Emergency Social Network [ESN]" that the whole
 
 ## use case 2 i.e. when the user is a cordinator
 8. When the user clicks on the `Announcements` link in the navigation, take to the page that shows the announcements.
-9. IF the user is a `Cordinator`, show an option to post a new announcement.
+9. IF the user is a `Cordinator / Administrator`, show an option to post a new announcement.
 
 
 # TODO
