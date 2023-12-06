@@ -248,6 +248,59 @@ app.get('/search', async (req, res) => {
       res.status(500).send('Internal Server Error');
   }
 });
+
+const predefinedStatuses = ['Available', 'Busy', 'Away', 'Do Not Disturb', 'Offline'];
+
+app.get('/share-status', async (req, res) => {
+  session = req.session;
+  uname = req.session.fullname;
+  const userStatus = 'Online'; // Replace this with your actual logic to fetch user status
+
+  if (session.userId && session.fullname) {
+    res.render('shareStatus', { predefinedStatuses, data: {
+      userid: req.session.userId,
+      fullname: req.session.fullname,
+    }, userStatus });
+  } else {
+    res.redirect('/');
+  }
+});
+
+app.post('/update-status', async (req, res) => {
+  try {
+    const { status } = req.body;
+
+    // Check if the user is logged in
+    if (req.session.userId && req.session.fullname) {
+      // Update the user's status in the database
+      await Citizen.findOneAndUpdate(
+        { username: req.session.userId },
+        { $set: { status } },
+        { new: true }
+      );
+
+      console.log(`User ${req.session.userId} updated status to: ${status}`);
+      
+      // Redirect to the status page with the updated information
+      res.redirect(`/status-info?status=${encodeURIComponent(status)}`);
+    } else {
+      res.redirect('/'); // Redirect to the login page if the user is not logged in
+    }
+  } catch (error) {
+    console.error(`Error updating status: ${error}`);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+// New route for displaying the updated status information
+app.get('/status-info', (req, res) => {
+  const updatedStatus = req.query.status || 'No Status';
+  res.render('statusInfo', { updatedStatus ,data: {
+    userid: req.session.userId,
+    fullname: req.session.fullname,
+  },});
+});
+
 // starting the server
 httpServer.listen(PORT, () => {
   console.log("The server is up and running on port 4000.");

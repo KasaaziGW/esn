@@ -1,0 +1,78 @@
+<!-- views/shareStatus.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('templates/head'); %>
+  <title>Share Status</title>
+  <style>
+    .container {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    label {
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+
+    select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    button {
+      background-color: #4caf50;
+      color: #fff;
+      padding: 10px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+    <%- include('templates/header'); %>
+    <main class="d-flex flex-nowrap" style="height:500px;">
+        <%- include('templates/nav'); %>
+  <div class="container">
+    <h1>Welcome, <%= data.fullname %>!</h1>
+    <h2>Share Your Status</h2>
+    <form action="/update-status" method="post">
+      <label for="status">Select Status:</label>
+      <select name="status" id="status">
+        <% predefinedStatuses.forEach(status => { %>
+          <option value="<%= status %>"><%= status %></option>
+        <% }); %>
+      </select>
+      <button type="submit">Share Status</button>
+    </form>
+    <h2>Your Current Status: <%= userStatus || 'No Status' %></h2>
+    <p><a href="/status-info">View Status Information</a></p>
+  </div>
+</main>
+<%- include('templates/footer'); %>
+<script src="js/chat.js"></script>
+</body>
+</html>
