@@ -203,7 +203,51 @@ socketIO.on("connect", (socket) => {
   socketIO.emit("joined", uname);
   console.log(`${uname} has joined`);
 });
+app.get('/searchctz', async (req, res) => {
+  session = req.session;
+  uname = req.session.fullname;
+  try {
+      const page = parseInt(req.query.page) || 1;
+      const perPage = 10;
 
+      const citizens = await Citizen.find()
+          .skip((page - 1) * perPage)
+          .limit(perPage);
+       if (session.userId && session.fullname) {
+      res.render('searchctz.ejs', { citizens,data: {
+        userid: req.session.userId,
+        fullname: req.session.fullname,
+      }, });
+    }
+  } catch (error) {
+      console.error(error);
+      res.status(500).send('Internal Server Error');
+  }
+});
+
+// Route to handle search with pagination
+app.get('/search', async (req, res) => {
+  session = req.session;
+  uname = req.session.fullname;
+  const { username, page } = req.query;
+  const perPage = 5;
+
+  try {
+      const citizens = await Citizen.find({ username: { $regex: new RegExp(username, 'i') } })
+          .skip((page - 1) * perPage)
+          .limit(perPage);
+
+          if (session.userId && session.fullname) {
+            res.render('searchctz.ejs', { citizens,data: {
+              userid: req.session.userId,
+              fullname: req.session.fullname,
+            }, });
+          }
+  } catch (error) {
+      console.error(error);
+      res.status(500).send('Internal Server Error');
+  }
+});
 // starting the server
 httpServer.listen(PORT, () => {
   console.log("The server is up and running on port 4000.");
