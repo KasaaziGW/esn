@@ -3,7 +3,7 @@ const { Announcement }  =require ('../models/Announcement')
 async function listAnnouncements(request, response){
     
     // fetch the list of announcements from the database
-    const announcements = await Announcement.find()
+    const announcements = await Announcement.find().sort({_id: -1})
     // return the list for rendering
     response.render('listAnnouncements',  {
         data: {
