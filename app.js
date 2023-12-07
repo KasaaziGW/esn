@@ -249,12 +249,12 @@ app.get('/search', async (req, res) => {
   }
 });
 
-const predefinedStatuses = ['Available', 'Busy', 'Away', 'Do Not Disturb', 'Offline'];
+const predefinedStatuses = ['Okay', 'Help', 'Emergency'];
 
 app.get('/share-status', async (req, res) => {
   session = req.session;
   uname = req.session.fullname;
-  const userStatus = 'Online'; // Replace this with your actual logic to fetch user status
+  const userStatus = 'OK'; // Replace this with your actual logic to fetch user status
 
   if (session.userId && session.fullname) {
     res.render('shareStatus', { predefinedStatuses, data: {
