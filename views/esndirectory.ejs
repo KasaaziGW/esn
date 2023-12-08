@@ -17,7 +17,7 @@
                         <thead>
                             <tr>
                                 <th>Name</th>
-                                <th>Emergency status</th>
+                                
                                 <th>Online / Offline</th>
                                 <th>Action</th>
                             </tr>
@@ -25,10 +25,10 @@
                         <tbody>
 <% users.forEach(user => { %>
                                 <tr>
-                                    <td><%= user.fullname %></td>
-                                    <td><%= user.emergency %></td>
+                                    <td><%= user.username %></td>
+
                                     <td><%= user.onlinestatus %></td>
-                                <td><button>send message</button></td>
+                                <td><button><a href="privatechat">Chat privately</a></button></td>
                                 </tr>
                             <% }); %>
                         </tbody>

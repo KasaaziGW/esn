@@ -5,6 +5,7 @@ const flashMessage = require("connect-flash");
 const sessions = require("express-session");
 const { Citizen } = require("./models/Citizen");
 const { Message } = require("./models/Message");
+const { Primessage } = require("./models/Primessage");
 const bcrypt = require("bcryptjs");
 
 const PORT = 4000;
@@ -45,6 +46,12 @@ mongoose.connect(dbUrl, (err) => {
 app.get("/", (request, response) => {
   session = request.session;
   if (session.userId && session.fullname) response.redirect("/chatroom");
+  else response.render("login");
+});
+//request for private chat
+app.get("/", (request, response) => {
+  session = request.session;
+  if (session.userId && session.fullname) response.redirect("/privatechat");
   else response.render("login");
 });
 
@@ -125,7 +132,9 @@ app.post("/citizenLogin", (request, response) => {
             session = request.session;
             session.userId = userInfo.username;
             session.fullname = userInfo.fullname;
+            //update online status here..
             response.redirect("/home");
+
           } else {
             request.flash("error", "Invalid Username or Password combination!");
             response.redirect("/");
@@ -169,11 +178,27 @@ app.get("/chatroom", (request, response) => {
     });
   } else response.redirect("/");
 });
+//Private chat
+app.get("/privatechat", (request, response) => {
+  session = request.session;
+  uname = request.session.fullname;
+  // console.log(`User ID: ${session.userId}\nFullname: ${session.fullname}`);
+  if (session.userId && session.fullname) {
+    response.render("privatechat", {
+      data: {
+        userid: request.session.userId,
+        fullname: request.session.fullname,
+      },
+    });
+  } else response.redirect("/");
+});
 
 app.get("/logout", (request, response) => {
   request.session.destroy();
   response.redirect("/");
 });
+
+
 
 // saving the message to the database
 app.post("/saveMessage", (request, response) => {
