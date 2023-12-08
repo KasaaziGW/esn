@@ -5,7 +5,7 @@ const flashMessage = require("connect-flash");
 const sessions = require("express-session");
 const { Citizen } = require("./models/Citizen");
 const { Message } = require("./models/Message");
-const { Primessage } = require("./models/Primessage");
+const { PrivateMessage } = require("./models/Privatemessage");
 const bcrypt = require("bcryptjs");
 
 const PORT = 4000;
@@ -130,6 +130,7 @@ app.post("/citizenLogin", (request, response) => {
         bcrypt.compare(pswd, hashedPassword).then((result) => {
           if (result) {
             session = request.session;
+            session.uid = userInfo._id;
             session.userId = userInfo.username;
             session.fullname = userInfo.fullname;
             //update online status here..
@@ -178,20 +179,7 @@ app.get("/chatroom", (request, response) => {
     });
   } else response.redirect("/");
 });
-//Private chat
-app.get("/privatechat", (request, response) => {
-  session = request.session;
-  uname = request.session.fullname;
-  // console.log(`User ID: ${session.userId}\nFullname: ${session.fullname}`);
-  if (session.userId && session.fullname) {
-    response.render("privatechat", {
-      data: {
-        userid: request.session.userId,
-        fullname: request.session.fullname,
-      },
-    });
-  } else response.redirect("/");
-});
+
 
 app.get("/logout", (request, response) => {
   request.session.destroy();
@@ -223,16 +211,61 @@ app.get("/fetchMessages", (request, response) => {
     else response.send(messages);
   });
 });
-app.get("/privatechat", (request, response) => {
-  console.log(request.session);
-	response.render("privatechat",{
+
+// Private chat
+app.get("/privatechat", async (request, response) => {
+  // get the private messages for the participants
+  const participant1 = request.query.p1
+  const participant2 = request.query.p2
+  // ordering the participants for easier lookup
+  let op1 = participant1;
+  let op2 = participant2;
+  if(participant2 < participant1){
+    op1 = participant2
+    op2 = participant1
+  }
+  // search for messages where the sender and recipient match the participants
+  // arrange the participant ids in ascending order so that we can always sort by p1 and p2
+  const messages = await PrivateMessage.find({
+    participant1: op1,
+    participant2: op2,
+  })
+  
+  // , (err, msgz) => {
+  //   if (err) console.log(`Error while fetching private messages.\nError: ${err}`);
+  //   // else response.send(messages);
+  //   else return msgz
+  // })
+
+  response.render("privatechat",{
     data: {
       userid: request.session.userId,
       fullname: request.session.fullname,
+      uid: request.session.uid,
+      participant1: op1,
+      participant2: op2,
+      messages
     },
   });
-
 });
+// send private chat
+app.post("/sendprivatechat", (request, response)=> {
+  let primessage = request.body
+  primessage.sender = request.session.uid
+  primessage.sentTime = new Date()
+  new PrivateMessage(primessage).save((err) => {
+    if (err) {
+      console.log(`Error while saving the message. \n Error: ${err}`);
+      response.sendStatus(500);
+    } else {
+      // socketIO.emit("message", message);
+      // response.sendStatus(200);
+      response.redirect(`/privatechat?p1=${request.body.participant1}&p2=${request.body.participant2}`)
+    }
+  })
+  
+})
+
 
 app.get("/esndirectory", (request, response) => {
 	Citizen.find({}, (err, citizens) => {
@@ -241,6 +274,7 @@ app.get("/esndirectory", (request, response) => {
 		response.render("esndirectory", {users: citizens, data: {
       userid: request.session.userId,
       fullname: request.session.fullname,
+      uid: request.session.uid
     },})
 }
 })
