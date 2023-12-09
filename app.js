@@ -242,6 +242,9 @@ app.get('/search', async (req, res) => {
               userid: req.session.userId,
               fullname: req.session.fullname,
             }, });
+          }else {
+            request.flash("error", "Citizen not found in the system!");
+            response.redirect("/");
           }
   } catch (error) {
       console.error(error);
