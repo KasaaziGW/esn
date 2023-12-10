@@ -214,7 +214,7 @@ app.get('/searchctz', async (req, res) => {
           .skip((page - 1) * perPage)
           .limit(perPage);
        if (session.userId && session.fullname) {
-      res.render('searchctz.ejs', { citizens,data: {
+      res.render('searchctz.ejs', { citizens,messages: req.flash(),data: {
         userid: req.session.userId,
         fullname: req.session.fullname,
       }, });
@@ -233,31 +233,34 @@ app.get('/search', async (req, res) => {
   const perPage = 5;
 
   try {
+    const { username, page } = req.query;
+    const perPage = 5;
+
+    if (!req.session.userId || !req.session.fullname) {
+        req.flash('error', 'Please log in to perform a search.');
+        res.redirect('/');
+        return;
+    }
+
     const citizens = await Citizen.find({ username: { $regex: new RegExp(username, 'i') } })
-    .skip((page - 1) * perPage)
-    .limit(perPage);
 
-if (username.length === 0) {
-    req.flash('error', 'No citizens found.');
-}
 
-res.render('searchctz.ejs', {
-    citizens,
-    data: {
-        userid: req.session.userId,
-        fullname: req.session.fullname,
-    },
-});
+.skip((page - 1) * perPage)
+        .limit(perPage);
 
-          if (session.userId && session.fullname) {
-            res.render('searchctz.ejs', { citizens,data: {
-              userid: req.session.userId,
-              fullname: req.session.fullname,
-            }, });
-          }else {
-            request.flash("error", "Citizen not found in the system!");
-            response.redirect("/");
-          }
+    if (citizens.length === 0) {
+        req.flash('info', 'No citizens found.');
+    }
+
+    res.render('searchctz.ejs', {
+        citizens, messages: req.flash(),
+        data: {
+            userid: req.session.userId,
+            fullname: req.session.fullname,
+        },
+         // Pass flash messages to the template
+    });
+
   } catch (error) {
       console.error(error);
       res.status(500).send('Internal Server Error');

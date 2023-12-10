@@ -60,11 +60,14 @@
             <div id="content" style="width: 90%; margin:auto;">
             
                 <h1>Citizen List</h1>
-<<<<<<< HEAD
-=======
-                
->>>>>>> c9bbfaf043ae0d2b710832555176e39ab2e0602e
-                <%- include('templates/errors') %>
+                <% if (messages.error && messages.error.length > 0) { %>
+                    <p style="color: red;"><%= messages.error[0] %></p>
+                <% } %>
+                <% if (messages.info && messages.info.length > 0) { %>
+                    <div class="alert alert-warning">
+                    <p style="color: blue;"><%= messages.info[0] %></p>
+                </div>
+                <% } %>
     <!-- Search Form -->
     <form action="/search" method="GET">
         <label for="username">Search by Username:</label>
