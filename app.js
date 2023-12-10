@@ -233,9 +233,21 @@ app.get('/search', async (req, res) => {
   const perPage = 5;
 
   try {
-      const citizens = await Citizen.find({ username: { $regex: new RegExp(username, 'i') } })
-          .skip((page - 1) * perPage)
-          .limit(perPage);
+    const citizens = await Citizen.find({ username: { $regex: new RegExp(username, 'i') } })
+    .skip((page - 1) * perPage)
+    .limit(perPage);
+
+if (username.length === 0) {
+    req.flash('error', 'No citizens found.');
+}
+
+res.render('searchctz.ejs', {
+    citizens,
+    data: {
+        userid: req.session.userId,
+        fullname: req.session.fullname,
+    },
+});
 
           if (session.userId && session.fullname) {
             res.render('searchctz.ejs', { citizens,data: {
