@@ -167,6 +167,8 @@ app.get("/home", (request, response) => {
 
 //loading the chatroom
 app.get("/chatroom", (request, response) => {
+  const op1 = 'x';
+  const op2 = 'y';
   session = request.session;
   uname = request.session.fullname;
   // console.log(`User ID: ${session.userId}\nFullname: ${session.fullname}`);
@@ -175,6 +177,9 @@ app.get("/chatroom", (request, response) => {
       data: {
         userid: request.session.userId,
         fullname: request.session.fullname,
+        uid: request.session.uid,
+        participant1: op1,
+        participant2: op2,
       },
     });
   } else response.redirect("/");
@@ -238,6 +243,7 @@ app.get("/privatechat", async (request, response) => {
   // })
 
   response.render("privatechat",{
+
     data: {
       userid: request.session.userId,
       fullname: request.session.fullname,
@@ -248,6 +254,41 @@ app.get("/privatechat", async (request, response) => {
     },
   });
 });
+
+// socket based private chat
+//loading the chatroom
+app.get("/socketprivatechatview", (request, response) => {
+  // get the private messages for the participants
+  const participant1 = request.query.p1
+  const participant2 = request.query.p2
+  // ordering the participants for easier lookup
+  let op1 = participant1;
+  let op2 = participant2;
+  if(participant2 < participant1){
+    op1 = participant2
+    op2 = participant1
+  }
+  
+  session = request.session;
+  uname = request.session.fullname;
+  // console.log(`User ID: ${session.userId}\nFullname: ${session.fullname}`);
+  const data = {
+        userid: request.session.userId,
+        fullname: request.session.fullname,
+        uid: request.session.uid,
+        participant1: op1,
+        participant2: op2,
+      }
+  if (session.userId && session.fullname) {
+    response.render(
+      "socketprivatechat",
+    {
+      data
+    });
+  } else response.redirect("/");
+});
+
+
 // send private chat
 app.post("/sendprivatechat", (request, response)=> {
   let primessage = request.body
@@ -265,6 +306,35 @@ app.post("/sendprivatechat", (request, response)=> {
   })
   
 })
+
+app.post("/savePrivateMessage", (request, response) => {
+  // create an object from the model
+  var message = new PrivateMessage(request.body);
+  // saving the message to the db
+  message.save((err) => {
+    if (err) {
+      console.log(`Error while saving the private message. \n Error: ${err}`);
+      response.sendStatus(500);
+    } else {
+      const eventname = `privatemessage-${message.participant1}-${message.participant2}`
+      // const eventname = "private"
+      socketIO.emit(eventname, message);
+      response.sendStatus(200);
+    }
+  });
+});
+
+// fetching messages from the database
+app.get("/fetchPrivateMessages", (request, response) => {
+  //retrieving the messages from the db
+  PrivateMessage.find({
+    participant1: request.query.p1,
+    participant2: request.query.p2
+  }, (err, messages) => {
+    if (err) console.log(`Error while fetching messages.\nError: ${err}`);
+    else response.send(messages);
+  });
+});
 
 
 app.get("/esndirectory", (request, response) => {
