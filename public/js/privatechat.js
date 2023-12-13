@@ -1,20 +1,25 @@
 var socket = io();
 $(() => {
   $("#sendButton").click(() => {
-    // alert(`${document.querySelector("#fullname").textContent} clicked me!`);
-    var fullname = document.querySelector("#fullname").textContent;
-    var sentMessage = $("#sendMessage").val();
-    var currentDate = getCurrentTime();
-    // var message1 = document.querySelector("#sendMessage").value;
-    // alert(`Sender: ${fullname}\nMessage: ${message}\nTime: ${currentDate}`);
-    var message = {
-      sender: fullname,
-      message: sentMessage,
-      sentTime: currentDate,
-    };
-    saveMessage(message);
+    
+    const participant1 = $("#participant1").val();
+    const participant2 = $("#participant2").val();
+    const message = $("#sendMessage").val();
+    const sender = $("#sender").val();
+
+
+    var primessage = {
+      participant1,
+      participant2,
+      message,
+      sender,
+      sentTime: new Date
+    }
+    console.info(primessage);
+    saveMessage(primessage)
     $("#sendMessage").val("");
   });
+
   getMessages();
 
   socket.on("joined", (user) => {
@@ -40,15 +45,22 @@ $(() => {
 
 // displaying message on the UI
 function getMessages() {
-  $.get("http://localhost:4000/fetchMessages", (messages) => {
+  const p1 = $("#participant1").val();
+  const p2 = $("#participant2").val();
+  $.get(`http://localhost:4000/fetchPrivateMessages?p1=${p1}&p2=${p2}`, (messages) => {
     messages.forEach(addMessage);
   });
   scrollContainer();
 }
-socket.on("message", addMessage);
+
+const p1 = $("#participant1").val();
+const p2 = $("#participant2").val();
+const eventname = `privatemessage-${p1}-${p2}`
+
+socket.on(eventname, addMessage);
 function addMessage(message) {
-  var username = document.querySelector("#fullname").textContent;
-  if (message.sender == username) {
+  var myid = $("#uid").val();
+  if (message.sender == myid) {
     $("#messages").append(`<div id="messageContainer1">
                           <div id="messageHeader">
                           <div id="senderName">Me</div>
@@ -93,7 +105,7 @@ function getCurrentTime() {
 
 // sending a message to the server
 function saveMessage(message) {
-  $.post("http://localhost:4000/saveMessage", message);
+  $.post("http://localhost:4000/savePrivateMessage", message);
 }
 
 // scrolling to the last message
