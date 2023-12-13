@@ -8,7 +8,8 @@ async function listUsers(request, response){
         data: {
           userid: request.session.userId,
           fullname: request.session.fullname,
-          privilege: request.session.privilege
+          privilege: request.session.privilege,
+          _id: request.session._id
         },
         users
       })

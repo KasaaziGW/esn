@@ -14,14 +14,15 @@ async function showUserProfilePage(request, response){
         data: {
           userid: request.session.userId,
           fullname: request.session.fullname,
-          privilege: request.session.privilege
+          privilege: request.session.privilege,
+          _id: request.session._id
         },
         userId: request.params.id,
         userProfile: user
       })
 }
 
-async function updateUserProfile(request, response) {
+async function updateUserProfile(request, response, socketIO) {
     const {_id, username, password, confirmPassword, status, privilege} = request.body
     let updateInfo = {}
     
@@ -42,6 +43,10 @@ async function updateUserProfile(request, response) {
     // if the account status has been set to Inactive, notify the user in case and log them out
     if (status.length > 1){
       updateInfo.status = status
+      const eventId = `deactivated_${_id}`
+      // const eventId = 'dd'
+      console.info(eventId)
+      socketIO.emit(eventId);
     }
   
     if (status.length > 1){

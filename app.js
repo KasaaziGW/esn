@@ -141,6 +141,7 @@ app.post("/citizenLogin", (request, response) => {
             }
             session = request.session;
             session.userId = userInfo.username;
+            session._id = userInfo._id;
             session.fullname = userInfo.fullname;
             session.privilege = userInfo.privilege;
             response.redirect("/home");
@@ -168,7 +169,8 @@ app.get("/home", (request, response) => {
       data: {
         userid: request.session.userId,
         fullname: request.session.fullname,
-        privilege: request.session.privilege
+        privilege: request.session.privilege,
+        _id: request.session._id
       },
     });
   } else response.redirect("/");
@@ -184,7 +186,8 @@ app.get("/chatroom", (request, response) => {
       data: {
         userid: request.session.userId,
         fullname: request.session.fullname,
-        privilege: request.session.privilege
+        privilege: request.session.privilege,
+        _id: request.session._id
       },
     });
   } else response.redirect("/");
@@ -222,7 +225,12 @@ app.get("/fetchMessages", (request, response) => {
 // group 3 routes
 app.get('/users', [checkAdmin], listUsers)
 app.get('/users/:id/', [checkAdmin], showUserProfilePage)
-app.post('/updateUserProfile', [checkAdmin], updateUserProfile)
+app.post('/updateUserProfile', [checkAdmin], 
+(req, res) => {
+  return updateUserProfile(req, res, socketIO)
+} 
+// updateUserProfile
+)
 app.get('/announcements', listAnnouncements);
 app.post('/post-announcement', [checkCordinator], postAnnouncement);
 
