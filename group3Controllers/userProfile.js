@@ -43,10 +43,10 @@ async function updateUserProfile(request, response, socketIO) {
     // if the account status has been set to Inactive, notify the user in case and log them out
     if (status.length > 1){
       updateInfo.status = status
-      const eventId = `deactivated_${_id}`
-      // const eventId = 'dd'
-      console.info(eventId)
-      socketIO.emit(eventId);
+      if(status === 'Inactive'){
+        const eventId = `deactivated_${_id}`
+        socketIO.emit(eventId);
+      }
     }
   
     if (status.length > 1){
