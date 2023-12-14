@@ -338,10 +338,23 @@ app.get("/fetchPrivateMessages", (request, response) => {
 
 
 app.get("/esndirectory", (request, response) => {
+  // get the list of active sessions
+  var livesessions = request.sessionStore.sessions;
+  var sessionlist = [];
+  for (var key in livesessions) {
+    var session = JSON.parse(livesessions[key]);
+    sessionlist.push(session.userId);
+  }
+  
 	Citizen.find({}, (err, citizens) => {
 		if(err) { console.log(`Error getting esn.\nError: ${err}`); }
 		else {
-		response.render("esndirectory", {users: citizens, data: {
+      var esnlist = [];
+      citizens.forEach((citizen) => {
+        esnlist.push({...citizen._doc, onlineoffline: sessionlist.includes(citizen.username)});
+        
+      })
+		response.render("esndirectory", {users: esnlist, data: {
       userid: request.session.userId,
       fullname: request.session.fullname,
       uid: request.session.uid
