@@ -215,11 +215,34 @@ app.post("/saveMessage", (request, response) => {
 });
 // fetching messages from the database
 app.get("/fetchMessages", (request, response) => {
-  //retrieving the messages from the db
-  Message.find({}, (err, messages) => {
-    if (err) console.log(`Error while fetching messages.\nError: ${err}`);
-    else response.send(messages);
+  
+  // while retrieving messages, get the users who are no longer active
+  // for each inactive user, exclude their messages from the list
+  const query = { status: 'Inactive' };
+  Citizen.find(query, (err, users) => {
+    if (err) console.log(`Error while fetching users ${err}`);
+    else {
+      // get the list of inactive users
+      let inactiveUsers = users.map(user => user.fullname);
+      // console.log(inactiveUsers);
+      // get the messages from the database
+      Message.find({}, (err, messages) => {
+        if (err) console.log(`Error while fetching messages.\nError: ${err}`);
+        else {
+          // filter the messages
+          let filteredMessages = messages.filter(message => !inactiveUsers.includes(message.sender));
+          // console.log(filteredMessages);
+          response.send(filteredMessages);
+        }
+      });
+    }
   });
+
+  //retrieving the messages from the db
+  // Message.find({}, (err, messages) => {
+  //   if (err) console.log(`Error while fetching messages.\nError: ${err}`);
+  //   else response.send(messages);
+  // });
 });
 
 // group 3 routes
