@@ -1,0 +1,74 @@
+<!-- latest-messages.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        /* Add CSS styling for consistent spacing */
+        li {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        strong {
+            margin-right: 10px;
+            min-width: 80px; /* Adjust the width as needed for spacing */
+            display: inline-block;
+        }
+
+        .label {
+            min-width: 80px; /* Adjust the width as needed for spacing */
+            display: inline-block;
+            font-weight: bold;
+        }
+
+        .message-content {
+            flex-grow: 1;
+        }
+    </style>
+    <%- include('templates/head'); %>
+    <title>Latest Messages</title>
+</head>
+<body>
+    <%- include('templates/header'); %>
+    <main class="d-flex flex-nowrap" style="height:500px;">
+        <%- include('templates/nav'); %>
+        
+        <div class="d-flex flex-column flex-shrink-0 p-3" style="width: 1060px;">
+            <h1>Latest Public Messages</h1>
+
+    <!-- Search form -->
+    <form action="/priv-search" method="get">
+        <label for="username">Search by Username:</label>
+        <input type="text" id="username" name="username" value="<%= searchTerm %>" />
+        <button type="submit">Search</button>
+    </form>
+
+    <% if (messages.length === 0) { %>
+        <p>No messages found.</p>
+    <% } else { %>
+        <div class="scroll-container"><ul>
+            <ul>
+                <% messages.forEach(message => { %>
+                    <li>
+                        <span class="label">Sender:</span> <%= message.sender %>
+                        <span class="label">Message:</span> <span class="message-content"><%= message.message %></span>
+                        <span class="label">Sent Time:</span> <%= message.sentTime %>
+                        <!-- Add other relevant fields -->
+                    </li>
+                <% }); %>
+            </ul>
+
+        <% if (hasMore) { %>
+            <!-- Add a "More" button to fetch the next page of messages -->
+            <a href="/priv-search?page=<%= page + 1 %>&username=<%= searchTerm %>">More</a>
+        <% } %>
+    <% } %>
+
+</div>
+</div>
+</main>
+    <%- include('templates/footer'); %>
+<script src="js/chat.js"></script>
+</body>
+</html>

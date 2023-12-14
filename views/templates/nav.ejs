@@ -31,11 +31,24 @@
                 Share Status
             </a>
         </li>
-        <li>
-            <a href="/searchctz" class="nav-link link-body-emphasis">
-                Search Information
-            </a>
-        </li>
+        <ul class="list-unstyled ps-0">
+            <li class="mb-1">
+                <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#account-collapse" aria-expanded="false">
+                    Search Information
+                </button>
+                <div class="collapse" id="account-collapse">
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small navHover">
+		<li><a href="/searchctz" class="link-body-emphasis d-inline-flex text-decoration-none rounded">List of Citizens</a></li>
+                    <li><a href="/priv-search" class="link-body-emphasis d-inline-flex text-decoration-none rounded">List of private 
+messages</a></li>
+                    <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">List of public 
+messages</a></li>
+<li><a href="/#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">List of public 
+announcements</a></li>
+                </ul>
+                </div>
+            </li>
+        </ul>
         <ul class="list-unstyled ps-0">
             <li class="mb-1">
                 <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#account-collapse" aria-expanded="false">

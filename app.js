@@ -215,7 +215,7 @@ app.get('/searchctz', async (req, res) => {
           .skip((page - 1) * perPage)
           .limit(perPage);
        if (session.userId && session.fullname) {
-      res.render('searchctz.ejs', { citizens,data: {
+      res.render('searchctz.ejs', { citizens,messages: req.flash(),data: {
         userid: req.session.userId,
         fullname: req.session.fullname,
       }, });
@@ -234,21 +234,33 @@ app.get('/search', async (req, res) => {
   const perPage = 5;
 
   try {
+    const { username, page } = req.query;
+    const perPage = 5;
+
+    if (!req.session.userId || !req.session.fullname) {
+        req.flash('error', 'Please log in to perform a search.');
+        res.redirect('/');
+        return;
+    }
+
     const citizens = await Citizen.find({ username: { $regex: new RegExp(username, 'i') } })
-    .skip((page - 1) * perPage)
-    .limit(perPage);
 
-if (username.length === 0) {
-    req.flash('error', 'No citizens found.');
-}
 
-res.render('searchctz.ejs', {
-    citizens,
-    data: {
-        userid: req.session.userId,
-        fullname: req.session.fullname,
-    },
-});
+.skip((page - 1) * perPage)
+        .limit(perPage);
+
+    if (citizens.length === 0) {
+        req.flash('info', 'No citizens found.');
+    }
+
+    res.render('searchctz.ejs', {
+        citizens, messages: req.flash(),
+        data: {
+            userid: req.session.userId,
+            fullname: req.session.fullname,
+        },
+         // Pass flash messages to the template
+    });
 
   } catch (error) {
       console.error(error);
@@ -307,7 +319,38 @@ app.get('/status-info', (req, res) => {
     fullname: req.session.fullname,
   },});
 });
+app.get('/priv-search', async (req, res) => {
+  try {
+      const page = parseInt(req.query.page) || 1;
+      const perPage = 10;
+      const searchTerm = req.query.username || '';
 
+      // Find messages by username or all messages if no username is provided
+      const query = searchTerm
+          ? { sender: { $regex: new RegExp(searchTerm, 'i') } }
+          : {};
+
+      const messages = await Message.find(query)
+          .sort({ sentTime: 'desc' }) // Sort in descending order based on sentTime
+          .skip((page - 1) * perPage)
+          .limit(perPage + 1); // Fetch one extra to determine if there are more
+
+      const hasMore = messages.length > perPage;
+      // Remove the extra message used for checking if there are more
+      if (hasMore) {
+          messages.pop();
+      }
+
+      // Render a view with the messages and pagination information
+      res.render('priv-search.ejs', { messages, page, hasMore, searchTerm ,data: {
+        userid: req.session.userId,
+        fullname: req.session.fullname,
+      },});
+  } catch (error) {
+      console.error(error);
+      res.status(500).send('Internal Server Error');
+  }
+});
 // starting the server
 httpServer.listen(PORT, () => {
   console.log("The server is up and running on port 4000.");
