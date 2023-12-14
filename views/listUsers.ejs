@@ -25,6 +25,7 @@
                                 <th>Username</th>
                                 <th>Privilege</th>
                                 <th>Status</th>
+                                <th>Online Status</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -34,7 +35,8 @@
                                     <td><a href="/users/<%= user._id %>/"><%= user.fullname %></a></td>
                                     <td><%= user.username %></td>
                                     <td><%= user.privilege %></td>
-                                <td><%= user.status %></td>
+                                    <td><%= user.status %></td>
+                                    <td><%= user.online ? 'Online' : '-' %></td>
                                 </tr>
                             <% }); %>
                         </tbody>
