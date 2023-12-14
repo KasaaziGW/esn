@@ -318,7 +318,38 @@ app.get('/status-info', (req, res) => {
     fullname: req.session.fullname,
   },});
 });
+app.get('/priv-search', async (req, res) => {
+  try {
+      const page = parseInt(req.query.page) || 1;
+      const perPage = 10;
+      const searchTerm = req.query.username || '';
 
+      // Find messages by username or all messages if no username is provided
+      const query = searchTerm
+          ? { sender: { $regex: new RegExp(searchTerm, 'i') } }
+          : {};
+
+      const messages = await Message.find(query)
+          .sort({ sentTime: 'desc' }) // Sort in descending order based on sentTime
+          .skip((page - 1) * perPage)
+          .limit(perPage + 1); // Fetch one extra to determine if there are more
+
+      const hasMore = messages.length > perPage;
+      // Remove the extra message used for checking if there are more
+      if (hasMore) {
+          messages.pop();
+      }
+
+      // Render a view with the messages and pagination information
+      res.render('priv-search.ejs', { messages, page, hasMore, searchTerm ,data: {
+        userid: req.session.userId,
+        fullname: req.session.fullname,
+      },});
+  } catch (error) {
+      console.error(error);
+      res.status(500).send('Internal Server Error');
+  }
+});
 // starting the server
 httpServer.listen(PORT, () => {
   console.log("The server is up and running on port 4000.");
