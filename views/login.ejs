@@ -27,5 +27,19 @@
         </div>
     </main>
     <%- include('templates/footer')%>
+    <script>
+        function showSnackbar(message) {
+            var snackbar = document.createElement("div");
+            snackbar.textContent = message;
+            snackbar.className = "snackbar";
+            document.body.appendChild(snackbar);
+
+            // Hide the snackbar after 3 seconds (adjust as needed)
+            setTimeout(function() {
+                snackbar.style.display = "none";
+                document.body.removeChild(snackbar);
+            }, 3000);
+        }
+    </script>
 </body>
 </html>

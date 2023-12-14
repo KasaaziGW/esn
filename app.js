@@ -127,12 +127,13 @@ app.post("/citizenLogin", (request, response) => {
             session.fullname = userInfo.fullname;
             response.redirect("/home");
           } else {
-            request.flash("error", "Invalid Username or Password combination!");
+            request.flash("error", "Incorrect password for the provided username!");
             response.redirect("/");
           }
         });
       } else {
         request.flash("error", "Citizen not found in the system!");
+        //showSnackbar("Citizen not found in the system!");
         response.redirect("/");
       }
     })
