@@ -6,6 +6,8 @@ const sessions = require("express-session");
 const { Citizen } = require("./models/Citizen");
 const { Message } = require("./models/Message");
 const bcrypt = require("bcryptjs");
+const nodemailer = require('nodemailer');
+
 
 const PORT = 4000;
 
@@ -98,14 +100,45 @@ app.post("/userRegister", (request, response) => {
               request.flash("error", `Error while adding citizen ${err}`);
               response.redirect("/register");
             } else {
+
+              // Send a welcome email to the user
+              sendWelcomeEmail(email, fullname);
               request.flash(
-                "success",
-                `${fullname} successfully added to the system.`
+                "success",`${fullname} successfully added to the system.`
               );
               response.redirect("/register");
             }
           });
         });
+// Function to send a welcome email
+function sendWelcomeEmail(email, fullname) {
+  // Create a Nodemailer transporter
+  let transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+          user: 'veveking2023@gmail.com', // Your Gmail email address
+          pass: '04Jan2014', // Your Gmail password
+      },
+  });
+
+  // Email content
+  let mailOptions = {
+      from: 'veveking2023@gmail.com', // Sender address
+      to: email, // Recipient address
+      subject: 'Welcome to Your App', // Subject line
+      text: `Hello ${fullname},\n\nWelcome to Your App! Your account has been successfully created.\n\nBest regards,\nYour App Team`,
+  };
+
+  // Send the email
+  transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+          console.error(`Error sending email: ${error}`);
+      } else {
+          console.log(`Email sent: ${info.response}`);
+      }
+  });
+}
+
       }
     });
   }
