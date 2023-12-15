@@ -4,6 +4,7 @@ const citizenSchema = new Schema({
   username: { type: String },
   fullname: { type: String },
   password: { type: String },
+  loginstatus: {type: String}, 
 });
 const Citizen = mongoose.model("Citizen", citizenSchema);
 module.exports = { Citizen };
