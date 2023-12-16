@@ -4,6 +4,8 @@ const citizenSchema = new Schema({
   username: { type: String },
   fullname: { type: String },
   password: { type: String },
+  privilege: { type: String},
+  status: { type: String},
   loginstatus: {type: String}, 
 });
 const Citizen = mongoose.model("Citizen", citizenSchema);

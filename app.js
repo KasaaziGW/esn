@@ -10,6 +10,12 @@ const bcrypt = require("bcryptjs");
 const nodemailer = require('nodemailer');
 
 
+// group 3
+const { checkAdmin, checkCordinator } = require('./group3Controllers/middleware/checkPrivilege');
+const { listUsers } = require('./group3Controllers/listUsers');
+const { showUserProfilePage, updateUserProfile } = require('./group3Controllers/userProfile');
+const { listAnnouncements, postAnnouncement } = require('./group3Controllers/announcements')
+
 const PORT = 4000;
 
 const app = express();
@@ -39,6 +45,9 @@ app.use(function (request, response, next) {
 var session, uname;
 // connecting to the database
 const dbUrl = "mongodb+srv://umumis:umu123@cluster0.odksibj.mongodb.net/";
+// const dbUrl = "mongodb://localhost:27017/misweb";
+
+
 mongoose.connect(dbUrl, (err) => {
   if (err) console.log(`Couldn't connect to MongoDB \n${err}.`);
   else console.log("Succesfully connected to MongoDB.");
@@ -100,6 +109,8 @@ app.post("/userRegister", (request, response) => {
             username: email,
             fullname: fullname,
             password: hashedPassword,
+            privilege: 'Citizen',
+            status: 'Active'
           });
           // adding the citizen to the database
           citizen.save((err) => {
@@ -150,6 +161,7 @@ function sendWelcomeEmail(email, fullname) {
     });
   }
 });
+
 // code for logging into the system
 app.post("/citizenLogin", (request, response) => {
   let username = request.body.email;
@@ -162,11 +174,18 @@ app.post("/citizenLogin", (request, response) => {
         const hashedPassword = userInfo.password;
         bcrypt.compare(pswd, hashedPassword).then((result) => {
           if (result) {
+            // if the user status is Inactive, block the login
+            if (userInfo.status === 'Inactive'){
+              request.flash("error", "Your account is not active, please contact the administrator");
+              return response.redirect("/");
+            }
             session = request.session;
             session.uid = userInfo._id;
             session.userId = userInfo.username;
+            session._id = userInfo._id;
             session.fullname = userInfo.fullname;
             //update online status here..
+            session.privilege = userInfo.privilege;
             response.redirect("/home");
 
           } else {
@@ -194,6 +213,8 @@ app.get("/home", (request, response) => {
       data: {
         userid: request.session.userId,
         fullname: request.session.fullname,
+        privilege: request.session.privilege,
+        _id: request.session._id
       },
     });
   } else response.redirect("/");
@@ -214,6 +235,8 @@ app.get("/chatroom", (request, response) => {
         uid: request.session.uid,
         participant1: op1,
         participant2: op2,
+        privilege: request.session.privilege,
+        _id: request.session._id
       },
     });
   } else response.redirect("/");
@@ -244,11 +267,34 @@ app.post("/saveMessage", (request, response) => {
 });
 // fetching messages from the database
 app.get("/fetchMessages", (request, response) => {
-  //retrieving the messages from the db
-  Message.find({}, (err, messages) => {
-    if (err) console.log(`Error while fetching messages.\nError: ${err}`);
-    else response.send(messages);
+  
+  // while retrieving messages, get the users who are no longer active
+  // for each inactive user, exclude their messages from the list
+  const query = { status: 'Inactive' };
+  Citizen.find(query, (err, users) => {
+    if (err) console.log(`Error while fetching users ${err}`);
+    else {
+      // get the list of inactive users
+      let inactiveUsers = users.map(user => user.fullname);
+      // console.log(inactiveUsers);
+      // get the messages from the database
+      Message.find({}, (err, messages) => {
+        if (err) console.log(`Error while fetching messages.\nError: ${err}`);
+        else {
+          // filter the messages
+          let filteredMessages = messages.filter(message => !inactiveUsers.includes(message.sender));
+          // console.log(filteredMessages);
+          response.send(filteredMessages);
+        }
+      });
+    }
   });
+
+  //retrieving the messages from the db
+  // Message.find({}, (err, messages) => {
+  //   if (err) console.log(`Error while fetching messages.\nError: ${err}`);
+  //   else response.send(messages);
+  // });
 });
 
 // Private chat
@@ -396,6 +442,19 @@ app.get("/esndirectory", (request, response) => {
 }
 })
 });
+
+
+// group 3 routes
+app.get('/users', [checkAdmin], listUsers)
+app.get('/users/:id/', [checkAdmin], showUserProfilePage)
+app.post('/updateUserProfile', [checkAdmin], 
+(req, res) => {
+  return updateUserProfile(req, res, socketIO)
+} 
+// updateUserProfile
+)
+app.get('/announcements', listAnnouncements);
+app.post('/post-announcement', [checkCordinator], postAnnouncement);
 
 // emitting a message when a user joins the chat
 socketIO.on("connect", (socket) => {
