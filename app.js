@@ -352,7 +352,7 @@ app.get('/status-info', (req, res) => {
     fullname: req.session.fullname,
   },});
 });
-app.get('/priv-search', async (req, res) => {
+app.get('/public-search', async (req, res) => {
   try {
       const page = parseInt(req.query.page) || 1;
       const perPage = 10;
@@ -375,7 +375,7 @@ app.get('/priv-search', async (req, res) => {
       }
 
       // Render a view with the messages and pagination information
-      res.render('priv-search.ejs', { messages, page, hasMore, searchTerm ,data: {
+      res.render('public-search.ejs', { messages, page, hasMore, searchTerm ,data: {
         userid: req.session.userId,
         fullname: req.session.fullname,
       },});
