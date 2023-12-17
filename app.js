@@ -6,6 +6,7 @@ const sessions = require("express-session");
 const { Citizen } = require("./models/Citizen");
 const { Message } = require("./models/Message");
 const { PrivateMessage } = require("./models/Privatemessage");
+const { Announcement } = require("./models/Announcement");
 const bcrypt = require("bcryptjs");
 const nodemailer = require('nodemailer');
 
@@ -509,7 +510,7 @@ app.get('/search', async (req, res) => {
     if (citizens.length === 0) {
         req.flash('info', 'No citizens found.');
     }
-
+    if (session.userId && session.fullname) {
     res.render('searchctz.ejs', {
         citizens, messages: req.flash(),
         data: {
@@ -517,7 +518,7 @@ app.get('/search', async (req, res) => {
             fullname: req.session.fullname,
         },
          // Pass flash messages to the template
-    });
+      });}
 
   } catch (error) {
       console.error(error);
@@ -571,16 +572,17 @@ app.post('/update-status', async (req, res) => {
 // New route for displaying the updated status information
 app.get('/status-info', (req, res) => {
   const updatedStatus = req.query.status || 'No Status';
+  if (session.userId && session.fullname) {
   res.render('statusInfo', { updatedStatus ,data: {
     userid: req.session.userId,
     fullname: req.session.fullname,
-  },});
+  },});}
 });
 app.get('/public-search', async (req, res) => {
   try {
       const page = parseInt(req.query.page) || 1;
       const perPage = 10;
-      const searchTerm = req.query.username || '';
+      const searchTerm = req.query.sender || '';
 
       // Find messages by username or all messages if no username is provided
       const query = searchTerm
@@ -597,17 +599,110 @@ app.get('/public-search', async (req, res) => {
       if (hasMore) {
           messages.pop();
       }
-
+      if (messages.length === 0) {
+        req.flash('info', 'No messages found.');
+    }
       // Render a view with the messages and pagination information
+      if (session.userId && session.fullname) {
       res.render('public-search.ejs', { messages, page, hasMore, searchTerm ,data: {
         userid: req.session.userId,
         fullname: req.session.fullname,
-      },});
+      },});}
   } catch (error) {
       console.error(error);
       res.status(500).send('Internal Server Error');
   }
 });
+//cater for public announcement
+app.get('/announcements-search', async (req, res) => {
+  try {
+      const page = parseInt(req.query.page) || 1;
+      const perPage = 10;
+      const searchTerm = req.query.posterName || '';
+
+      // Find messages by username or all messages if no username is provided
+      const query = searchTerm
+          ? { posterName: { $regex: new RegExp(searchTerm, 'i') } }
+          : {};
+
+      const announc = await Announcement.find(query)
+          .sort({ sentTime: 'desc' }) // Sort in descending order based on sentTime
+          .skip((page - 1) * perPage)
+          .limit(perPage + 1); // Fetch one extra to determine if there are more
+
+      const hasMore = announc.length > perPage;
+      // Remove the extra message used for checking if there are more
+      if (hasMore) {
+        announc.pop();
+      }
+
+      // Render a view with the messages and pagination information
+      if (session.userId && session.fullname) {
+      res.render('announcements-search.ejs', { announc, page, hasMore, searchTerm ,data: {
+        userid: req.session.userId,
+        fullname: req.session.fullname,
+      },});}
+  } catch (error) {
+      console.error(error);
+      res.status(500).send('Internal Server Error');
+  }
+});
+
+
+
+// handling the private messaging
+app.get('/private-search', async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const perPage = 10;
+    const searchTerm = req.query.search || '';
+
+    // Fetch all private messages before searching
+    const allPrivateMessages = await PrivateMessage.find({
+        $or: [
+            { participant1: req.session.userId },
+            { participant2: req.session.userId },
+        ],
+    }).sort({ sentTime: 'desc' });
+
+    // Fetch private messages based on participants and search term
+    const participant1 = req.session.userId;
+    const participant2 = req.query.participantId; // Replace with actual logic to get participant2
+
+    const privateMessages = await PrivateMessage.find({
+        $and: [
+            { participant1, participant2 },
+            { message: { $regex: new RegExp(searchTerm, 'i') } },
+        ],
+    }).sort({ sentTime: 'desc' })
+        .skip((page - 1) * perPage)
+        .limit(perPage + 1);
+
+    const hasMore = privateMessages.length > perPage;
+    // Remove the extra message used for checking if there are more
+    if (hasMore) {
+        privateMessages.pop();
+    }
+
+    // Render a view with all private messages and the option to search
+    if (session.userId && session.fullname) {
+    res.render('private-search.ejs', {
+        allPrivateMessages,
+        privateMessages,
+        page,
+        hasMore,
+        searchTerm,
+        data: {
+            userid: req.session.userId,
+            fullname: req.session.fullname,
+        },
+    });}
+  } catch (error) {
+      console.error(error);
+      res.status(500).send('Internal Server Error');
+  }
+});
+
 // starting the server
 httpServer.listen(PORT, () => {
   console.log("The server is up and running on port 4000.");

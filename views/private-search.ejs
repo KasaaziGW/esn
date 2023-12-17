@@ -4,15 +4,19 @@
 <head>
     <style>
         /* Add CSS styling for consistent spacing */
-        .scroll-container {
-            max-height: 400px; /* Set a max height for the scroll container */
-            overflow-y: scroll; /* Enable vertical scrollbar */
+        strong {
+            margin-right: 10px;
+            min-width: 80px; /* Adjust the width as needed for spacing */
+            display: inline-block;
         }
+
         .label {
             min-width: 80px; /* Adjust the width as needed for spacing */
             display: inline-block;
             font-weight: bold;
         }
+
+
         button {
       background-color: #4caf50;
       color: #fff;
@@ -26,7 +30,6 @@
     button:hover {
       background-color: #45a049;
     }
-
     </style>
     <%- include('templates/head'); %>
     <title>Latest Messages</title>
@@ -35,38 +38,36 @@
     <%- include('templates/header'); %>
     <main class="d-flex flex-nowrap" style="height:550px;">
         <%- include('templates/nav'); %>
-        
         <div class="d-flex flex-column flex-shrink-0 p-3" style="width: 1060px;">
-            <h3>Latest Public Messages</h3>
+            <h3>Latest Private Messages</h3>
 
     <!-- Search form -->
-    <form action="/public-search" method="get">
-        <label for="sender">Search by Username:</label>
-        <input type="text" id="sender" name="sender" value="<%= searchTerm %>" />
+    <form action="/private-search" method="get">
+        <label for="username">Search by Username:</label>
+        <input type="text" id="username" name="username" value="<%= searchTerm %>" />
         <button type="submit">Search</button>
     </form>
 
-    <% if (messages.length === 0) { %>
+    <% if (allPrivateMessages.length === 0) { %>
         <p>No messages found.</p>
     <% } else { %>
         <div class="scroll-container">
-        
-                <% messages.forEach(message => { %>
+            <ul>
+                <% allPrivateMessages.forEach(privat => { %>
                     <div class="card">
                         <div class="card-body">
-                        <b> <label>Sender: </label></b> <%= message.sender %> 
+                        <h3>Private Messages between <%= participant1 %> and <%= participant2 %></h3>
                         <hr style="border-top: 2px solid #b80909; ">
-                        <span class="message-content"><%= message.message %></span></br>
-                        <small>At: <%= message.sentTime %></small>
+                        <span class="message-content"><%= privat.message %></span>
+                        <small>Sender: <%= privat.sender %> at <%= privat.sentTime %></small>
                         </div>
                       </div>
-                    
                 <% }); %>
-   
+            </ul>
 
         <% if (hasMore) { %>
             <!-- Add a "More" button to fetch the next page of messages -->
-            <a href="/private-search?page=<%= page + 1 %>&sender=<%= searchTerm %>">More</a>
+            <a href="/private-search?page=<%= page + 1 %>&username=<%= searchTerm %>">More</a>
         <% } %>
     <% } %>
 

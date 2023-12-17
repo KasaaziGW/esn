@@ -1,0 +1,72 @@
+<!-- latest-messages.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        /* Add CSS styling for consistent spacing */
+        .scroll-container {
+            max-height: 300px; /* Set a max height for the scroll container */
+            overflow-y: scroll; /* Enable vertical scrollbar */
+        }
+
+        strong {
+            margin-right: 10px;
+            min-width: 80px; /* Adjust the width as needed for spacing */
+            display: inline-block;
+        }
+
+        .label {
+            min-width: 80px; /* Adjust the width as needed for spacing */
+            display: inline-block;
+            font-weight: bold;
+        }
+       
+    </style>
+    <%- include('templates/head'); %>
+    <title>Latest announcements</title>
+</head>
+<body>
+    <%- include('templates/header'); %>
+    <main class="d-flex flex-nowrap" style="height:550px;">
+        <%- include('templates/nav'); %>
+        
+        <div class="d-flex flex-column flex-shrink-0 p-3" style="width: 1060px;">
+            <h3>Latest Public Announcements</h3>
+           
+    <!-- Search form -->
+    <form action="/announcements-search" method="get">
+        <label for="posterName">Search by posterName:</label>
+        <input type="text" id="posterName" name="posterName" value="<%= searchTerm %>" />
+        <button type="submit">Search</button>
+    </form>
+
+    <% if (announc.length === 0) { %>
+        <p>No messages found.</p>
+    <% } else { %>
+        <div class="scroll-container">
+                       <% announc.forEach(privat => { %>
+                  
+                        <div class="card">
+                            <div class="card-body">
+                                <small>Posted by <%= privat.posterName %></small>
+                                <hr style="border-top: 2px solid #b80909; ">
+                              <p><%= privat.announcement %></p>
+                              <small> at <%= privat.sentTime %></small>
+                            </div>
+                          </div>
+                   
+                <% }); %>
+            
+        <% if (hasMore) { %>
+            <!-- Add a "More" button to fetch the next page of messages -->
+            <a href="/announcements-search?page=<%= page + 1 %>&posterName=<%= searchTerm %>">More</a>
+        <% } %>
+    <% } %>
+
+</div>
+</div>
+</main>
+    <%- include('templates/footer'); %>
+<script src="js/chat.js"></script>
+</body>
+</html>

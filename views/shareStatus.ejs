@@ -57,13 +57,17 @@
     <main class="d-flex flex-nowrap" style="height:500px;">
         <%- include('templates/nav'); %>
   <div class="container">
-    <h1>Welcome, <%= data.fullname %>!</h1>
-    <h2>Share Your Status</h2>
+    <h2>Welcome, <%= data.fullname %>!</h2>
+    <h3>Share Your Status</h3>
     <form action="/update-status" method="post">
       <label for="status">Select Status:</label>
       <select name="status" id="status">
         <% predefinedStatuses.forEach(status => { %>
-          <option value="<%= status %>"><%= status %></option>
+           <div class="card">
+            <div class="card-body">
+              <option value="<%= status %>"><%= status %></option>
+            </div>
+          </div>
         <% }); %>
       </select>
       <button type="submit">Share Status</button>

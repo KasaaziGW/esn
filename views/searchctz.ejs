@@ -6,7 +6,7 @@
     <style>
         /* Add some basic styling for better readability */
                .scroll-container {
-            max-height: 300px; /* Set a max height for the scroll container */
+            max-height: 350px; /* Set a max height for the scroll container */
             overflow-y: scroll; /* Enable vertical scrollbar */
         }
         ul {
@@ -53,13 +53,13 @@
 </head>
 <body>
     <%- include('templates/header'); %>
-    <main class="d-flex flex-nowrap" style="height:500px;">
+    <main class="d-flex flex-nowrap" style="height:550px;">
         <%- include('templates/nav'); %>
         
         <div class="d-flex flex-column flex-shrink-0 p-3" style="width: 1060px;">
             <div id="content" style="width: 90%; margin:auto;">
             
-                <h1>Citizen List</h1>
+                <h4>Citizen List</h4>
                 <% if (messages.error && messages.error.length > 0) { %>
                     <p style="color: red;"><%= messages.error[0] %></p>
                 <% } %>
@@ -81,8 +81,9 @@
             <% for (let i = 0; i < citizens.length; i++) { %>
                 <li><strong>Username:</strong> <%= citizens[i].username %></li>
                 <li><strong>Full Name:</strong> <%= citizens[i].fullname %></li>
+                <li><strong>Status:</strong> <%= citizens[i].status %></li>
                 <!-- Add other fields as needed -->
-                <hr>
+                <hr style="border-top: 2px solid #b80909; ">
             <% } %>
         </ul>
     </div>
