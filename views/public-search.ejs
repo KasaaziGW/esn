@@ -37,11 +37,11 @@
         <%- include('templates/nav'); %>
         
         <div class="d-flex flex-column flex-shrink-0 p-3" style="width: 1060px;">
-            <h3>Latest Public Messages</h3>
+            <h5>Latest Public Messages</h5>
 
     <!-- Search form -->
     <form action="/public-search" method="get">
-        <label for="sender">Search by Username:</label>
+        <label for="sender">Search by sender:</label></br>
         <input type="text" id="sender" name="sender" value="<%= searchTerm %>" />
         <button type="submit">Search</button>
     </form>
@@ -66,7 +66,7 @@
 
         <% if (hasMore) { %>
             <!-- Add a "More" button to fetch the next page of messages -->
-            <a href="/private-search?page=<%= page + 1 %>&sender=<%= searchTerm %>">More</a>
+            <a href="/public-search?page=<%= page + 1 %>&sender=<%= searchTerm %>">More</a>
         <% } %>
     <% } %>
 

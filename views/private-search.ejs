@@ -8,19 +8,11 @@
             max-height: 400px; /* Set a max height for the scroll container */
             overflow-y: scroll; /* Enable vertical scrollbar */
         }
-        strong {
-            margin-right: 10px;
-            min-width: 80px; /* Adjust the width as needed for spacing */
-            display: inline-block;
-        }
-
         .label {
             min-width: 80px; /* Adjust the width as needed for spacing */
             display: inline-block;
             font-weight: bold;
         }
-
-
         button {
       background-color: #4caf50;
       color: #fff;
@@ -34,6 +26,7 @@
     button:hover {
       background-color: #45a049;
     }
+
     </style>
     <%- include('templates/head'); %>
     <title>Latest Messages</title>
@@ -42,13 +35,14 @@
     <%- include('templates/header'); %>
     <main class="d-flex flex-nowrap" style="height:550px;">
         <%- include('templates/nav'); %>
+        
         <div class="d-flex flex-column flex-shrink-0 p-3" style="width: 1060px;">
-            <h3>Latest Private Messages</h3>
+            <h5>Latest Private Messages</h5>
 
     <!-- Search form -->
     <form action="/private-search" method="get">
-        <label for="username">Search by Username:</label>
-        <input type="text" id="username" name="username" value="<%= searchTerm %>" />
+        <label for="sender">Search by Sender:</label></br>
+        <input type="text" id="sender" name="sender" value="<%= searchTerm %>" />
         <button type="submit">Search</button>
     </form>
 
@@ -61,7 +55,7 @@
                         <div class="card-body">
                         <h5>Messages between <%= privat.participant1 %> and <%= privat.sender %></h5>
                         <hr style="border-top: 2px solid #b80909;">
-                        <span class="message-content"><%= privat.message %></span>
+                        <span class="message-content">Message: <%= privat.message %></span></br>
                         <small>Time: <%= privat.sentTime %></small>
                         </div>
                       </div>
@@ -69,7 +63,7 @@
 
         <% if (hasMore) { %>
             <!-- Add a "More" button to fetch the next page of messages -->
-            <a href="/private-search?page=<%= page + 1 %>&username=<%= searchTerm %>">More</a>
+            <a href="/private-search?page=<%= page + 1 %>&sender=<%= searchTerm %>">More</a>
         <% } %>
     <% } %>
 

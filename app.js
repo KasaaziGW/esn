@@ -493,7 +493,7 @@ app.get('/search', async (req, res) => {
 
   try {
     const { username, page } = req.query;
-    const perPage = 5;
+    const perPage = 10;
 
     if (!req.session.userId || !req.session.fullname) {
         req.flash('error', 'Please log in to perform a search.');
@@ -503,10 +503,9 @@ app.get('/search', async (req, res) => {
 
     const citizens = await Citizen.find({ username: { $regex: new RegExp(username, 'i') } })
 
-
-.skip((page - 1) * perPage)
-        .limit(perPage);
-
+    .sort({ status: 'desc' }) // Sort in descending order based on sentTime
+    .skip((page - 1) * perPage)
+    .limit(perPage + 1); // Fetch one extra to determine if there are more
     if (citizens.length === 0) {
         req.flash('info', 'No citizens found.');
     }
@@ -526,58 +525,49 @@ app.get('/search', async (req, res) => {
   }
 });
 
-const predefinedStatuses = ['Okay', 'Help', 'Emergency'];
 
-app.get('/share-status', async (req, res) => {
-  session = req.session;
-  uname = req.session.fullname;
-  const userStatus = 'OK'; // Replace this with your actual logic to fetch user status
+// Display citizens with status
+app.get('/citizens', async (req, res) => {
 
-  if (session.userId && session.fullname) {
-    res.render('shareStatus', { predefinedStatuses, data: {
+  try {
+    const currentUser = req.session.user;
+    const citizens = await Citizen.find();
+    res.render('citizens', { citizens, currentUser ,data: {
       userid: req.session.userId,
       fullname: req.session.fullname,
-    }, userStatus });
-  } else {
-    res.redirect('/');
-  }
-});
-
-app.post('/update-status', async (req, res) => {
-  try {
-    const { status } = req.body;
-
-    // Check if the user is logged in
-    if (req.session.userId && req.session.fullname) {
-      // Update the user's status in the database
-      await Citizen.findOneAndUpdate(
-        { username: req.session.userId },
-        { $set: { status } },
-        { new: true }
-      );
-
-      console.log(`User ${req.session.userId} updated status to: ${status}`);
-      
-      // Redirect to the status page with the updated information
-      res.redirect(`/status-info?status=${encodeURIComponent(status)}`);
-    } else {
-      res.redirect('/'); // Redirect to the login page if the user is not logged in
-    }
+    },});
   } catch (error) {
-    console.error(`Error updating status: ${error}`);
+    console.error(error);
     res.status(500).send('Internal Server Error');
   }
 });
 
-// New route for displaying the updated status information
-app.get('/status-info', (req, res) => {
-  const updatedStatus = req.query.status || 'No Status';
-  if (session.userId && session.fullname) {
-  res.render('statusInfo', { updatedStatus ,data: {
-    userid: req.session.userId,
-    fullname: req.session.fullname,
-  },});}
+// Update citizen status
+app.post('/update-status/:username', async (req, res) => {
+  session = req.session;
+  uname = req.session.fullname;
+  const { username } = req.params;
+  const { status } = req.body;
+
+  try {
+    const currentUser = req.session.username;
+    const citizen = await Citizen.findOne({ username });
+    if (username) {
+    citizen.status = status;
+    await citizen.save();
+    res.redirect('/citizens');
+    }else {
+      // Redirect to an error page or handle the situation appropriately
+      res.status(403).send('Forbidden: You cannot update someone else\'s status.');
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
 });
+
+
+
 
 //public search 
 app.get('/public-search', async (req, res) => {
@@ -592,7 +582,7 @@ app.get('/public-search', async (req, res) => {
           : {};
 
       const messages = await Message.find(query)
-          .sort({ sentTime: 'desc' }) // Sort in descending order based on sentTime
+          .sort({ sentTime: 'asc' }) // Sort in descending order based on sentTime
           .skip((page - 1) * perPage)
           .limit(perPage + 1); // Fetch one extra to determine if there are more
 
@@ -601,9 +591,7 @@ app.get('/public-search', async (req, res) => {
       if (hasMore) {
           messages.pop();
       }
-      if (messages.length === 0) {
-        req.flash('info', 'No messages found.');
-    }
+
       // Render a view with the messages and pagination information
       if (session.userId && session.fullname) {
       res.render('public-search.ejs', { messages, page, hasMore, searchTerm ,data: {
@@ -673,9 +661,6 @@ app.get('/private-search', async (req, res) => {
       if (hasMore) {
         privateMessages.pop();
       }
-      if (privateMessages.length === 0) {
-        req.flash('info', 'No messages found.');
-    }
       // Render a view with the messages and pagination information
       if (session.userId && session.fullname) {
       res.render('private-search.ejs', { privateMessages, page, hasMore, searchTerm ,data: {

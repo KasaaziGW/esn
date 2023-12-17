@@ -1,0 +1,118 @@
+<!-- views/citizens.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include('templates/head'); %>
+  <title>Citizens</title>
+  <style>
+    /* Add your CSS styles here */
+    /* Example style for status emojis */
+    .status-emoji {
+      font-size: 20px;
+      margin-right: 5px;
+    }
+    .scroll-container {
+            max-height: 500px; /* Set a max height for the scroll container */
+            overflow-y: scroll; /* Enable vertical scrollbar */
+        }
+
+    .container {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+
+    label {
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+
+    select {
+      width: 70%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    button {
+      background-color: #4caf50;
+      color: #fff;
+      padding: 10px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+
+<body>
+  <%- include('templates/header'); %>
+  <main class="d-flex flex-nowrap" style="height:550px;">
+      <%- include('templates/nav'); %>
+      
+      <div class="d-flex flex-column flex-shrink-0 p-3" style="width: 1060px;">
+  <h5>Citizens and Status</h5>
+  <div class="scroll-container">
+    <% citizens.forEach(citizen => { %>
+      <div class="card">
+        <div class="card-body">
+        <b> <label>Citizen: </label></b>  <%= citizen.fullname %> 
+          
+        <hr style="border-top: 2px solid #b80909; ">
+        <b> <label>Current Status: </label></b> <span class="message-content"><%= citizen.status %></span></br>
+        <form method="post" action="/update-status/<%= citizen.username %>">
+          
+            <select name="status">
+              <option value="Undefined" <%= citizen.status === 'Undefined' ? 'selected' : '' %>>❓ Undefined</option>
+              <option value="OK" <%= citizen.status === 'OK' ? 'selected' : '' %>>✅ OK</option>
+              <option value="Emergency" <%= citizen.status === 'Emergency' ? 'selected' : '' %>>🆘 Emergency</option>
+              <option value="Help" <%= citizen.status === 'Help' ? 'selected' : '' %>>🆘 Help</option>
+              
+              <!-- Add more options as needed -->
+          
+            <!-- Add more options as needed -->
+          </select>
+          <button type="submit">Update Status</button>
+        </form>
+        </div>
+      </div>
+
+    <% }); %>
+  </div>
+  <script>
+    // Inline the getStatusEmoji function within the EJS script
+    function getStatusEmoji(status) {
+      switch (status) {
+        case 'OK':
+          return '✅';
+        case 'Emergency':
+          return '🆘';
+        case 'Help':
+          return '🆘';
+        default:
+          return '';
+      }
+    }
+  </script>
+  </div>
+</main>
+<%- include('templates/footer'); %>
+<script src="js/chat.js"></script>
+</body>
+
+</html>
