@@ -4,6 +4,10 @@
 <head>
     <style>
         /* Add CSS styling for consistent spacing */
+        .scroll-container {
+            max-height: 400px; /* Set a max height for the scroll container */
+            overflow-y: scroll; /* Enable vertical scrollbar */
+        }
         strong {
             margin-right: 10px;
             min-width: 80px; /* Adjust the width as needed for spacing */
@@ -48,22 +52,20 @@
         <button type="submit">Search</button>
     </form>
 
-    <% if (allPrivateMessages.length === 0) { %>
+    <% if (privateMessages.length === 0) { %>
         <p>No messages found.</p>
     <% } else { %>
         <div class="scroll-container">
-            <ul>
-                <% allPrivateMessages.forEach(privat => { %>
+                <% privateMessages.forEach(privat => { %>
                     <div class="card">
                         <div class="card-body">
-                        <h3>Private Messages between <%= participant1 %> and <%= participant2 %></h3>
-                        <hr style="border-top: 2px solid #b80909; ">
+                        <h5>Messages between <%= privat.participant1 %> and <%= privat.sender %></h5>
+                        <hr style="border-top: 2px solid #b80909;">
                         <span class="message-content"><%= privat.message %></span>
-                        <small>Sender: <%= privat.sender %> at <%= privat.sentTime %></small>
+                        <small>Time: <%= privat.sentTime %></small>
                         </div>
                       </div>
                 <% }); %>
-            </ul>
 
         <% if (hasMore) { %>
             <!-- Add a "More" button to fetch the next page of messages -->

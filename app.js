@@ -578,6 +578,8 @@ app.get('/status-info', (req, res) => {
     fullname: req.session.fullname,
   },});}
 });
+
+//public search 
 app.get('/public-search', async (req, res) => {
   try {
       const page = parseInt(req.query.page) || 1;
@@ -648,55 +650,38 @@ app.get('/announcements-search', async (req, res) => {
   }
 });
 
-
-
 // handling the private messaging
+
 app.get('/private-search', async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1;
-    const perPage = 10;
-    const searchTerm = req.query.search || '';
+    
+      const page = parseInt(req.query.page) || 1;
+      const perPage = 10;
+      const searchTerm = req.query.sender || '';
+      // Find messages by username or all messages if no username is provided
+      const query = searchTerm
+          ? { sender: { $regex: new RegExp(searchTerm, 'i') } }
+          : {};
 
-    // Fetch all private messages before searching
-    const allPrivateMessages = await PrivateMessage.find({
-        $or: [
-            { participant1: req.session.userId },
-            { participant2: req.session.userId },
-        ],
-    }).sort({ sentTime: 'desc' });
+      const privateMessages = await PrivateMessage.find(query)
+          .sort({ sentTime: 'desc' }) // Sort in descending order based on sentTime
+          .skip((page - 1) * perPage)
+          .limit(perPage + 1); // Fetch one extra to determine if there are more
 
-    // Fetch private messages based on participants and search term
-    const participant1 = req.session.userId;
-    const participant2 = req.query.participantId; // Replace with actual logic to get participant2
-
-    const privateMessages = await PrivateMessage.find({
-        $and: [
-            { participant1, participant2 },
-            { message: { $regex: new RegExp(searchTerm, 'i') } },
-        ],
-    }).sort({ sentTime: 'desc' })
-        .skip((page - 1) * perPage)
-        .limit(perPage + 1);
-
-    const hasMore = privateMessages.length > perPage;
-    // Remove the extra message used for checking if there are more
-    if (hasMore) {
+      const hasMore = PrivateMessage.length > perPage;
+      // Remove the extra message used for checking if there are more
+      if (hasMore) {
         privateMessages.pop();
+      }
+      if (privateMessages.length === 0) {
+        req.flash('info', 'No messages found.');
     }
-
-    // Render a view with all private messages and the option to search
-    if (session.userId && session.fullname) {
-    res.render('private-search.ejs', {
-        allPrivateMessages,
-        privateMessages,
-        page,
-        hasMore,
-        searchTerm,
-        data: {
-            userid: req.session.userId,
-            fullname: req.session.fullname,
-        },
-    });}
+      // Render a view with the messages and pagination information
+      if (session.userId && session.fullname) {
+      res.render('private-search.ejs', { privateMessages, page, hasMore, searchTerm ,data: {
+        userid: req.session.userId,
+        fullname: req.session.fullname,
+      },});}
   } catch (error) {
       console.error(error);
       res.status(500).send('Internal Server Error');
