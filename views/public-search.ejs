@@ -1,0 +1,79 @@
+<!-- latest-messages.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        /* Add CSS styling for consistent spacing */
+        .scroll-container {
+            max-height: 400px; /* Set a max height for the scroll container */
+            overflow-y: scroll; /* Enable vertical scrollbar */
+        }
+        .label {
+            min-width: 80px; /* Adjust the width as needed for spacing */
+            display: inline-block;
+            font-weight: bold;
+        }
+        button {
+      background-color: #4caf50;
+      color: #fff;
+      padding: 10px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    </style>
+    <%- include('templates/head'); %>
+    <title>Latest Messages</title>
+</head>
+<body>
+    <%- include('templates/header'); %>
+    <main class="d-flex flex-nowrap" style="height:550px;">
+        <%- include('templates/nav'); %>
+        
+        <div class="d-flex flex-column flex-shrink-0 p-3" style="width: 1060px;">
+            <h5>Latest Public Messages</h5>
+
+    <!-- Search form -->
+    <form action="/public-search" method="get">
+        <label for="sender">Search by sender:</label></br>
+        <input type="text" id="sender" name="sender" value="<%= searchTerm %>" />
+        <button type="submit">Search</button>
+    </form>
+
+    <% if (messages.length === 0) { %>
+        <p>No messages found.</p>
+    <% } else { %>
+        <div class="scroll-container">
+        
+                <% messages.forEach(message => { %>
+                    <div class="card">
+                        <div class="card-body">
+                        <b> <label>Sender: </label></b> <%= message.sender %> 
+                        <hr style="border-top: 2px solid #b80909; ">
+                        <span class="message-content"><%= message.message %></span></br>
+                        <small>At: <%= message.sentTime %></small>
+                        </div>
+                      </div>
+                    
+                <% }); %>
+   
+
+        <% if (hasMore) { %>
+            <!-- Add a "More" button to fetch the next page of messages -->
+            <a href="/public-search?page=<%= page + 1 %>&sender=<%= searchTerm %>">More</a>
+        <% } %>
+    <% } %>
+
+</div>
+</div>
+</main>
+    <%- include('templates/footer'); %>
+<script src="js/chat.js"></script>
+</body>
+</html>

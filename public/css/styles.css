@@ -7,7 +7,7 @@ html{
 }
 body {
     font-size: 16px;
-    height: 100vh;
+    height: 100%;
     font-family: Lexend Deca,sans-serif;
 }
 
@@ -264,4 +264,15 @@ input[type=password]:placeholder {
 #sentTime{
     font-size: 14px;
     font-weight: 300;
+}
+.snackbar {
+    display: none;
+    padding: 15px;
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background-color: #f44336;
+    color: white;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
 }

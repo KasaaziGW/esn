@@ -1,7 +1,7 @@
-<div class="d-flex flex-column flex-shrink-0 p-3 bg-light" style="width: 280px;height: 500px;background-color: #f8f9fa!important; border-right: 2px solid rgba(0,0,0,0.1);">    
+<div class="d-flex flex-column flex-shrink-0 p-3 bg-light" style="width: 280px;height: 600px;background-color: #f8f9fa!important; border-right: 2px solid rgba(0,0,0,0.1);">    
     <a href="#" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
         <span class="fs-6" id="fullname"><strong><em><%= data.fullname %></em></strong></span>
-    </a>
+         </a>
     <ul class="nav nav-pills flex-column mb-auto navHover">
         <li class="nav-item">
             <a href="/home" class="nav-link" aria-current="page" style="color: black;">
@@ -16,26 +16,56 @@
                 <div class="collapse" id="home-collapse">
                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small navHover">
                     <li><a href="/chatroom" class="link-body-emphasis d-inline-flex text-decoration-none rounded">Publicly</a></li>
-                    <li><a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">Privately</a></li>
+                    <li><a href="/esndirectory" class="link-body-emphasis d-inline-flex text-decoration-none rounded">Privately</a></li>
                 </ul>
                 </div>
             </li>
         </ul>
         <li>
-            <a href="#" class="nav-link link-body-emphasis">
+            <a href="/esndirectory" class="nav-link link-body-emphasis">
                 ESN Directory
             </a>
         </li>
         <li>
-            <a href="#" class="nav-link link-body-emphasis">
+            <a href="/citizens" class="nav-link link-body-emphasis">
                 Share Status
             </a>
         </li>
+        <ul class="list-unstyled ps-0">
+            <li class="mb-1">
+                <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#account-collapse" aria-expanded="false">
+                    Search Information
+                </button>
+                <div class="collapse" id="account-collapse">
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small navHover">
+		<li><a href="/searchctz" class="link-body-emphasis d-inline-flex text-decoration-none rounded">Search Citizens</a></li>
+                    <li><a href="private-search" class="link-body-emphasis d-inline-flex text-decoration-none rounded">Search private 
+messages</a></li>
+                    <li><a href="/public-search" class="link-body-emphasis d-inline-flex text-decoration-none rounded">Search public 
+messages</a></li>
+<li><a href="/announcements-search" class="link-body-emphasis d-inline-flex text-decoration-none rounded">Search public 
+announcements</a></li>
+                </ul>
+                </div>
+            </li>
+        </ul>
+        
         <li>
-            <a href="#" class="nav-link link-body-emphasis">
-                Search Information
+            <a href="/announcements" class="nav-link link-body-emphasis">
+                Announcements
             </a>
         </li>
+        <!-- TODO check if the logged in user is an admin -->
+        <% if (data.privilege === 'Administrator') { %>
+                        
+        <li>
+            <a href="/users" class="nav-link link-body-emphasis">
+                Users
+            </a>
+        </li>
+        <% } %>
+        
+
         <ul class="list-unstyled ps-0">
             <li class="mb-1">
                 <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#account-collapse" aria-expanded="false">

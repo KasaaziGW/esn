@@ -100,3 +100,4 @@ function saveMessage(message) {
 function scrollContainer() {
   $("#messages").scrollTop($("#messages")[0].scrollHeight);
 }
+
